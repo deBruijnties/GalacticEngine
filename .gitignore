@@ -399,3 +399,8 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+!*/Assets/**/*
+# Allow ALL files in src
+!GalacticEngine/src/
+!GalacticEngine/src/**

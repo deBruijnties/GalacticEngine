@@ -110,12 +110,21 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)Dependencies/Assimp/include;$(ProjectDir)Dependencies/GLAD/include;$(ProjectDir)Dependencies/GLFW/include;$(ProjectDir)Dependencies/GLM/include;$(ProjectDir)Dependencies/STB/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>
       </SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;assimp-vc143-mt.lib%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies/Assimp/lib;$(ProjectDir)Dependencies/GLFW/lib</AdditionalLibraryDirectories>
+    </Lib>
+    <PostBuildEvent>
+      <Command>xcopy /y /i "$(ProjectDir)Dependencies\Assimp\lib\assimp-vc143-mt.dll" "$(TargetDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -127,20 +136,73 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)Dependencies/Assimp/include;$(ProjectDir)Dependencies/GLAD/include;$(ProjectDir)Dependencies/GLFW/include;$(ProjectDir)Dependencies/GLM/include;$(ProjectDir)Dependencies/STB/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>
       </SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;assimp-vc143-mt.lib%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies/Assimp/lib;$(ProjectDir)Dependencies/GLFW/lib</AdditionalLibraryDirectories>
+    </Lib>
+    <PostBuildEvent>
+      <Command>xcopy /y /i "$(ProjectDir)Dependencies\Assimp\lib\assimp-vc143-mt.dll" "$(TargetDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="framework.h" />
-    <ClInclude Include="pch.h" />
+    <ClInclude Include="src\Core\Debug\Profiler.h" />
+    <ClInclude Include="src\Core\engine.h" />
+    <ClInclude Include="src\Core\Input\Mouse.h" />
+    <ClInclude Include="src\Core\Math\Math.h" />
+    <ClInclude Include="src\Core\Math\Types.h" />
+    <ClInclude Include="src\Core\Rendering\Buffers\framebuffer.h" />
+    <ClInclude Include="src\Core\Rendering\Buffers\gbuffer.h" />
+    <ClInclude Include="src\Core\Rendering\Buffers\StructuredBuffer.h" />
+    <ClInclude Include="src\Core\Rendering\Mesh\FullScreenQuad.h" />
+    <ClInclude Include="src\Core\Rendering\Mesh\Mesh.h" />
+    <ClInclude Include="src\Core\Rendering\Renderer.h" />
+    <ClInclude Include="src\Core\Rendering\Resources\Material.h" />
+    <ClInclude Include="src\Core\Rendering\Resources\Shader.h" />
+    <ClInclude Include="src\Core\Rendering\Resources\Texture.h" />
+    <ClInclude Include="src\Core\Scene\Component.h" />
+    <ClInclude Include="src\Core\Scene\Components\Camera.h" />
+    <ClInclude Include="src\Core\Scene\Components\Lighting\PointLight.h" />
+    <ClInclude Include="src\Core\Scene\Components\MeshRenderer.h" />
+    <ClInclude Include="src\Core\Scene\Components\MeshRendererInstanced.h" />
+    <ClInclude Include="src\Core\Scene\Components\Transform.h" />
+    <ClInclude Include="src\Core\Scene\Gameobject.h" />
+    <ClInclude Include="src\Core\Scene\Scene.h" />
+    <ClInclude Include="src\Core\Time.h" />
+    <ClInclude Include="src\pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GalacticEngine.cpp" />
-    <ClCompile Include="pch.cpp">
+    <ClCompile Include="Dependencies\GLAD\src\glad.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Core\engine.cpp" />
+    <ClCompile Include="src\Core\Input\Mouse.cpp" />
+    <ClCompile Include="src\Core\Math\Math.cpp" />
+    <ClCompile Include="src\Core\Rendering\Buffers\FrameBuffer.cpp" />
+    <ClCompile Include="src\Core\Rendering\Buffers\gbuffer.cpp" />
+    <ClCompile Include="src\Core\Rendering\Buffers\StructuredBuffer.cpp" />
+    <ClCompile Include="src\Core\Rendering\Mesh\Mesh.cpp" />
+    <ClCompile Include="src\Core\Rendering\Renderer.cpp" />
+    <ClCompile Include="src\Core\Rendering\Resources\Material.cpp" />
+    <ClCompile Include="src\Core\Rendering\Resources\Shader.cpp" />
+    <ClCompile Include="src\Core\Rendering\Resources\Texture.cpp" />
+    <ClCompile Include="src\Core\Scene\Components\Camera.cpp" />
+    <ClCompile Include="src\Core\Scene\Components\Lighting\PointLight.cpp" />
+    <ClCompile Include="src\Core\Scene\Components\MeshRenderer.cpp" />
+    <ClCompile Include="src\Core\Scene\Components\MeshRendererInstanced.cpp" />
+    <ClCompile Include="src\Core\Scene\Components\Transform.cpp" />
+    <ClCompile Include="src\Core\Scene\Gameobject.cpp" />
+    <ClCompile Include="src\Core\Scene\Scene.cpp" />
+    <ClCompile Include="src\Core\Time.cpp" />
+    <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
