@@ -225,6 +225,7 @@ void Renderer::EndCamera()
     ditherShader->bind();
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, s_currentRenderingCamera->GetInternalOutput().colorTex);
+    //glBindTexture(GL_TEXTURE_2D, s_currentRenderingCamera->gbuffer.GetNormalRoughTex());//TEMP TEMP TEMP
     ditherShader->setInt("u_HDR", 0);
 
     FullscreenQuad::Get().Draw();

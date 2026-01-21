@@ -25,11 +25,15 @@ private:
     unsigned int _nbo = 0;
     unsigned int _cbo = 0;
     unsigned int _uvbo = 0;
+    unsigned int _tbo = 0;
+
 protected:
     std::vector<Vector3> Vertices;
     std::vector<unsigned int> Indices;
     std::vector<Vector3> Normals;
     std::vector<Vector4> Colors;
     std::vector<Vector2> UVs;
+    std::vector<Vector3> Tangents;
+
 };
 

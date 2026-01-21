@@ -58,6 +58,9 @@ Mesh::~Mesh() {
     if (_vao != 0) {
         glDeleteVertexArrays(1, &_vao);
     }
+    if (_tbo != 0)
+        glDeleteBuffers(1, &_tbo);
+
 }
 
 void Mesh::Bind() const
@@ -86,6 +89,18 @@ void Mesh::GenerateBuffers(bool dynamicDraw)
     glBufferData(GL_ARRAY_BUFFER, Vertices.size() * sizeof(Vector3), Vertices.data(), usage);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vector3), (void*)0);
     glEnableVertexAttribArray(0);
+
+    // --- Tangent Buffer ---
+    if (!Tangents.empty())
+    {
+        if (_tbo == 0)
+            glGenBuffers(1, &_tbo);
+
+        glBindBuffer(GL_ARRAY_BUFFER, _tbo);
+        glBufferData(GL_ARRAY_BUFFER, Tangents.size() * sizeof(Vector3), Tangents.data(), usage);
+        glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vector3), (void*)0);
+        glEnableVertexAttribArray(4);
+    }
 
     // --- Normal Buffer ---
     if (!Normals.empty()) {
@@ -161,7 +176,8 @@ void Mesh::GenerateBuffers(bool dynamicDraw)
         // Unbind VAO (leave EBO attached to VAO)
         glBindVertexArray(0);
     }
-
+    std::cout << "[Mesh] Vertices: " << Vertices.size() << "\n";
+    std::cout << "[Mesh] Tangents: " << Tangents.size() << "\n";
 
 }
 
@@ -191,6 +207,7 @@ Mesh Mesh::LoadMeshFromFile(const std::string& filepath)
     mesh.Normals.reserve(aiMesh->mNumVertices);
     mesh.UVs.reserve(aiMesh->mNumVertices);
     mesh.Colors.reserve(aiMesh->mNumVertices);
+    mesh.Tangents.reserve(aiMesh->mNumVertices);
 
     // --- Extract vertex data ---
     for (unsigned int i = 0; i < aiMesh->mNumVertices; i++) {
@@ -219,6 +236,16 @@ Mesh Mesh::LoadMeshFromFile(const std::string& filepath)
             const aiColor4D& c = aiMesh->mColors[0][i];
             mesh.Colors.emplace_back(c.r, c.g, c.b, c.a);
         }
+
+        if (aiMesh->HasTangentsAndBitangents())
+        {
+            mesh.Tangents.emplace_back(
+                aiMesh->mTangents[i].x,
+                aiMesh->mTangents[i].y,
+                aiMesh->mTangents[i].z
+            );
+        }
+
     }
 
     // --- Extract indices ---
