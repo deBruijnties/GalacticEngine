@@ -54,7 +54,7 @@ namespace GalacticEngine::Core
         }
 
         Time::Initialize();
-        //Mouse::Init(window);
+        Input::Mouse::Init(window);
 
 
     }
@@ -97,6 +97,7 @@ namespace GalacticEngine::Core
     {
         OnStart();
         Renderer::Init(width, height);
+
         double lastTime = glfwGetTime();
 
         while (window && !glfwWindowShouldClose(window))
@@ -109,7 +110,6 @@ namespace GalacticEngine::Core
             lastTime = currentTime;
 
             Time::Update(dt);
-
 
             {
                 Debug::Profiler::PROFILE_SCOPE("input");

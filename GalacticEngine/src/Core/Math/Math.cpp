@@ -6,6 +6,9 @@
 
 namespace GalacticEngine::Math
 {
+
+    static glm::vec2 ToGLM(const Vector2& v) { return { v.x, v.y}; }
+    static Vector2 FromGLM(const glm::vec2& v) { return { v.x, v.y}; }
     // Conversion helpers (PRIVATE)
     static glm::vec3 ToGLM(const Vector3& v) { return { v.x, v.y, v.z }; }
     static Vector3 FromGLM(const glm::vec3& v) { return { v.x, v.y, v.z }; }
@@ -54,6 +57,20 @@ namespace GalacticEngine::Math
         return glm::radians(v);
     }
 
+    float Lerp(float a, float b, float t)
+    {
+        return glm::mix(a, b, t);
+    }
+
+    float Clamp(float v, float a, float b)
+    {
+        return glm::clamp(v,a,b);
+    }
+
+    Vector3 Radians(Vector3 v)
+    {
+        return FromGLM(glm::radians(ToGLM(v)));
+    }
 
     Vector3 Normalize(const Vector3& v)
     {
@@ -70,9 +87,24 @@ namespace GalacticEngine::Math
         return glm::dot(ToGLM(a), ToGLM(b));
     }
 
+    float Dot(const Vector2& a, const Vector2& b)
+    {
+        return glm::dot(ToGLM(a), ToGLM(b));
+    }
+
     Vector3 Cross(const Vector3& a, const Vector3& b)
     {
         return FromGLM(glm::cross(ToGLM(a), ToGLM(b)));
+    }
+
+    Vector3 Lerp(Vector3 a, Vector3 b, float t)
+    {
+        return FromGLM(glm::mix(ToGLM(a), ToGLM(b), t));
+    }
+
+    Vector3 Mod(Vector3 a, Vector3 b)
+    {
+        return FromGLM(glm::mod(ToGLM(a), ToGLM(b)));
     }
 
     Matrix4 Identity()
@@ -142,4 +174,11 @@ namespace GalacticEngine::Math
         auto r = ToGLM(m) * glm::mat4_cast(ToGLM(q));
         return FromGLM(r);
     }
+
+    Matrix4 Rotate(float angleRadians, const Vector3& axis)
+    {
+        glm::mat4 r = glm::rotate(glm::mat4(1.0f), angleRadians, ToGLM(axis));
+        return FromGLM(r);
+    }
+
 }

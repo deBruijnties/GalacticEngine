@@ -16,11 +16,17 @@ namespace GalacticEngine
         Vector2 operator-(const Vector2& r) const { return { x - r.x, y - r.y }; }
         Vector2 operator*(float s) const { return { x * s, y * s }; }
         Vector2 operator/(float s) const { return { x / s, y / s }; }
+        Vector2 operator*(const Vector2& r) const { return { x * r.x, y * r.y }; }
+        Vector2 operator/(const Vector2& r) const { return { x / r.x, y / r.y }; }
+        Vector2 operator-() const { return Vector2(-x, -y); }
+
 
         Vector2& operator+=(const Vector2& r) { x += r.x; y += r.y; return *this; }
         Vector2& operator-=(const Vector2& r) { x -= r.x; y -= r.y; return *this; }
         Vector2& operator*=(float s) { x *= s; y *= s; return *this; }
         Vector2& operator/=(float s) { x /= s; y /= s; return *this; }
+        Vector2& operator*=(const Vector2& r) { x *= r.x; y *= r.y; return *this; }
+        Vector2& operator/=(const Vector2& r) { x /= r.x; y /= r.y; return *this; }
     };
 
     struct Vector3
@@ -40,11 +46,17 @@ namespace GalacticEngine
         Vector3 operator-(const Vector3& r) const { return { x - r.x, y - r.y, z - r.z }; }
         Vector3 operator*(float s) const { return { x * s, y * s, z * s }; }
         Vector3 operator/(float s) const { return { x / s, y / s, z / s }; }
+        Vector3 operator*(const Vector3& r) const { return { x * r.x, y * r.y, z * r.z }; }
+        Vector3 operator/(const Vector3& r) const { return { x / r.x, y / r.y, z / r.z }; }
+        Vector3 operator-() const { return Vector3(-x, -y, -z); }
 
         Vector3& operator+=(const Vector3& r) { x += r.x; y += r.y; z += r.z; return *this; }
         Vector3& operator-=(const Vector3& r) { x -= r.x; y -= r.y; z -= r.z; return *this; }
         Vector3& operator*=(float s) { x *= s; y *= s; z *= s; return *this; }
         Vector3& operator/=(float s) { x /= s; y /= s; z /= s; return *this; }
+        Vector3& operator*=(const Vector3& r) { x *= r.x; y *= r.y; z *= r.z; return *this; }
+        Vector3& operator/=(const Vector3& r) { x /= r.x; y /= r.y; z /= r.z; return *this; }
+
     };
 
     struct Vector4
@@ -64,6 +76,7 @@ namespace GalacticEngine
         Vector4 operator-(const Vector4& r) const { return { x - r.x, y - r.y, z - r.z, w - r.w }; }
         Vector4 operator*(float s) const { return { x * s, y * s, z * s, w * s }; }
         Vector4 operator/(float s) const { return { x / s, y / s, z / s, w / s }; }
+        Vector4 operator-() const { return Vector4(-x, -y, -z, -w); }
 
         Vector4& operator+=(const Vector4& r) { x += r.x; y += r.y; z += r.z; w += r.w; return *this; }
         Vector4& operator-=(const Vector4& r) { x -= r.x; y -= r.y; z -= r.z; w -= r.w; return *this; }
@@ -83,6 +96,7 @@ namespace GalacticEngine
         Vector2Int operator-(const Vector2Int& r) const { return { x - r.x, y - r.y }; }
         Vector2Int operator*(int s) const { return { x * s, y * s }; }
         Vector2Int operator/(int s) const { return { x / s, y / s }; }
+        Vector2Int operator-() const { return Vector2Int(-x, -y); }
 
         Vector2Int& operator+=(const Vector2Int& r) { x += r.x; y += r.y; return *this; }
         Vector2Int& operator-=(const Vector2Int& r) { x -= r.x; y -= r.y; return *this; }
@@ -107,6 +121,7 @@ namespace GalacticEngine
         Vector3Int operator-(const Vector3Int& r) const { return { x - r.x, y - r.y, z - r.z }; }
         Vector3Int operator*(int s) const { return { x * s, y * s, z * s }; }
         Vector3Int operator/(int s) const { return { x / s, y / s, z / s }; }
+        Vector3Int operator-() const { return Vector3Int(-x, -y, -z); }
 
         Vector3Int& operator+=(const Vector3Int& r) { x += r.x; y += r.y; z += r.z; return *this; }
         Vector3Int& operator-=(const Vector3Int& r) { x -= r.x; y -= r.y; z -= r.z; return *this; }
@@ -131,6 +146,7 @@ namespace GalacticEngine
         Vector4Int operator-(const Vector4Int& r) const { return { x - r.x, y - r.y, z - r.z, w - r.w }; }
         Vector4Int operator*(int s) const { return { x * s, y * s, z * s, w * s }; }
         Vector4Int operator/(int s) const { return { x / s, y / s, z / s, w / s }; }
+        Vector4Int operator-() const { return Vector4Int(-x, -y, -z, -w); }
 
         Vector4Int& operator+=(const Vector4Int& r) { x += r.x; y += r.y; z += r.z; w += r.w; return *this; }
         Vector4Int& operator-=(const Vector4Int& r) { x -= r.x; y -= r.y; z -= r.z; w -= r.w; return *this; }
@@ -145,38 +161,13 @@ namespace GalacticEngine
         Quaternion() : x(0), y(0), z(0), w(1) {}
         Quaternion(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
 
-        static Quaternion Identity()
-        {
-            return Quaternion(0, 0, 0, 1);
-        }
+        static Quaternion Identity();
 
-        Quaternion Normalized() const
-        {
-            float len = sqrtf(x * x + y * y + z * z + w * w);
-            if (len <= 0.000001f)
-                return Identity();
+        Quaternion Normalized() const;
 
-            float inv = 1.0f / len;
-            return Quaternion(x * inv, y * inv, z * inv, w * inv);
-        }
+        static Quaternion FromEuler(const Vector3& euler);
 
-        static Quaternion FromEuler(const Vector3& euler)
-        {
-            float cx = cosf(euler.x * 0.5f);
-            float sx = sinf(euler.x * 0.5f);
-            float cy = cosf(euler.y * 0.5f);
-            float sy = sinf(euler.y * 0.5f);
-            float cz = cosf(euler.z * 0.5f);
-            float sz = sinf(euler.z * 0.5f);
-
-            Quaternion q;
-            q.w = cx * cy * cz + sx * sy * sz;
-            q.x = sx * cy * cz - cx * sy * sz;
-            q.y = cx * sy * cz + sx * cy * sz;
-            q.z = cx * cy * sz - sx * sy * cz;
-
-            return q.Normalized();
-        }
+        static Quaternion quatLookAtRH(const Vector3& dir, const Vector3& up);
     };
 
     struct Matrix3
@@ -209,6 +200,16 @@ namespace GalacticEngine
             for (int i = 0; i < 16; ++i) r.m[i] = 0.0f;
             return r;
         }
+
+        inline Vector3 GetColumn(int col) const
+        {
+            return Vector3(
+                m[col * 4 + 0],
+                m[col * 4 + 1],
+                m[col * 4 + 2]
+            );
+        }
+
 
         inline float& operator()(int row, int col)
         {

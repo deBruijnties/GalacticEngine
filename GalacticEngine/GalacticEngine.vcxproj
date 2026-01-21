@@ -186,6 +186,7 @@
     <ClCompile Include="src\Core\engine.cpp" />
     <ClCompile Include="src\Core\Input\Mouse.cpp" />
     <ClCompile Include="src\Core\Math\Math.cpp" />
+    <ClCompile Include="src\Core\Math\Types.cpp" />
     <ClCompile Include="src\Core\Rendering\Buffers\FrameBuffer.cpp" />
     <ClCompile Include="src\Core\Rendering\Buffers\gbuffer.cpp" />
     <ClCompile Include="src\Core\Rendering\Buffers\StructuredBuffer.cpp" />
