@@ -8,17 +8,6 @@
 
 void MeshRendererInstanced::OnSubmitRender()
 {
-    if (!mesh || !material || !instanceBuffer)
-        return;
-
-    instanceBuffer->Bind();
-    material->Bind();
-
-    mesh->DrawInstanced(
-        static_cast<GLsizei>(
-            instanceBuffer->GetInstanceCount()
-            )
-    );
 
 	// G-buffer outputs
 	// Albedo.rgb (RGBA8) + Metallic.a (A8)

@@ -144,6 +144,14 @@ namespace GalacticEngine::Core
                 Profiler::Profiler::Get().DumpToConsole();
                 dumpTimer = 0.0;
             }
+#else
+            static double dumpTimer = 0.0;
+            dumpTimer += dt;
+            if (dumpTimer > 1.0)
+            {
+                std::cout << Time::fps << "fps\n";
+                dumpTimer = 0;
+            }
 #endif
         }
 

@@ -257,7 +257,7 @@ void Renderer::DefferedOpaquePass()
         cmd.mesh->Bind();
         cmd.mesh->DrawInstanced(
             static_cast<GLsizei>(
-                cmd.instanceBuffer->GetInstanceCount()
+                cmd.instanceBuffer->GetActiveCount()
                 )
         );
         //also draw to gbuffers
@@ -340,7 +340,7 @@ void Renderer::ForwardUnlitPass()
         cmd.instanceBuffer->Bind();
         cmd.mesh->Bind();
         cmd.mesh->DrawInstanced(
-            static_cast<GLsizei>(cmd.instanceBuffer->GetInstanceCount())
+            static_cast<GLsizei>(cmd.instanceBuffer->GetActiveCount())
         );
     }
 }
@@ -384,7 +384,7 @@ void Renderer::ForwardTransparentPass()
         cmd.mesh->Bind();
         cmd.mesh->DrawInstanced(
             static_cast<GLsizei>(
-                cmd.instanceBuffer->GetInstanceCount()
+                cmd.instanceBuffer->GetActiveCount()
                 )
         );
     }
@@ -412,10 +412,6 @@ void Renderer::Submit(RenderCommand& cmd)
     if (!s_currentCamera)
         return;
     const Vector3 cameraPos = s_currentCamera->transform->worldPosition;
-    //const Vector3 worldPos = Vector3(cmd.transform.GetColumn3(3)); // Transform is a Matrix4
-
-    //cmd.depth = Math::Length(cameraPos - worldPos);
-    //std::cout << "Depth: " << cmd.depth << "\n";
 
     if (cmd.material->isTransparent)
         s_TransparentQueue.push_back(cmd);

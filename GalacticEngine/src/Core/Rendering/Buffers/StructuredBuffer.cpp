@@ -17,8 +17,9 @@ StructuredBuffer::~StructuredBuffer()
 
 void StructuredBuffer::Allocate(size_t instanceCount, unsigned int usage)
 {
-    count = instanceCount;
-    cpuData.resize(count * stride);
+    capacity = instanceCount;
+    activeCount = instanceCount; // default = full
+    cpuData.resize(capacity * stride);
 
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, id);
     glBufferData(
@@ -36,7 +37,7 @@ void StructuredBuffer::Upload()
     glBufferSubData(
         GL_SHADER_STORAGE_BUFFER,
         0,
-        cpuData.size(),
+        activeCount * stride,
         cpuData.data()
     );
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
@@ -52,11 +53,6 @@ void* StructuredBuffer::GetRawPtr(size_t index)
 void StructuredBuffer::Bind() const
 {
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, binding, id);
-}
-
-size_t StructuredBuffer::GetInstanceCount() const
-{
-    return count;
 }
 
 size_t StructuredBuffer::GetStride() const
