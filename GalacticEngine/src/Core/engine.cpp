@@ -55,6 +55,7 @@ namespace GalacticEngine::Core
 
         Time::Initialize();
         Input::Mouse::Init(window);
+        Input::Input::Init(window);
 
 
     }
@@ -77,14 +78,14 @@ namespace GalacticEngine::Core
 
     void Engine::Render()
     {
-		Debug::Profiler::PROFILE_FUNCTION();
+		PROFILE_FUNCTION();
 
         Renderer::BeginScene();
         currentScene->Render();
         
         for (Camera* cam : Camera::allCameras)
         {
-            Debug::Profiler::PROFILE_SCOPE("Camera Render");
+            PROFILE_SCOPE("Camera Render");
             Renderer::BeginCamera(*cam);
             Renderer::EndCamera();
         }
@@ -102,47 +103,48 @@ namespace GalacticEngine::Core
 
         while (window && !glfwWindowShouldClose(window))
         {
-            Debug::Profiler::PROFILE_SCOPE("Frame");
-            Debug::Profiler::Get().BeginFrame();
+            PROFILE_SCOPE("Frame");
+            Profiler::Get().BeginFrame();
 
             double currentTime = glfwGetTime();
             double dt = currentTime - lastTime;
             lastTime = currentTime;
 
             Time::Update(dt);
-
+            Input::Input::Update();
             {
-                Debug::Profiler::PROFILE_SCOPE("input");
+                PROFILE_SCOPE("input");
                 glfwPollEvents();
                 OnProcessInput();
 
             }
             {
-                Debug::Profiler::PROFILE_SCOPE("update");
+                PROFILE_SCOPE("update");
                 currentScene->Update();
                 OnUpdate();
                 Input::Mouse::Update();
 
             }
             {
-                Debug::Profiler::PROFILE_SCOPE("RenderSubmit");
+                PROFILE_SCOPE("RenderSubmit");
                 Render();
             }
             {
-                Debug::Profiler::PROFILE_SCOPE("swapbuffers");
+                PROFILE_SCOPE("swapbuffers");
                 glfwSwapBuffers(window);
             }
 
-            Debug::Profiler::Profiler::Get().EndFrame();
+            Profiler::Profiler::Get().EndFrame();
+#if _DEBUG
 
             static double dumpTimer = 0.0;
             dumpTimer += dt;
             if (dumpTimer > 1.0)
             {
-                Debug::Profiler::Profiler::Get().DumpToConsole();
+                Profiler::Profiler::Get().DumpToConsole();
                 dumpTimer = 0.0;
             }
-
+#endif
         }
 
         if (window) {

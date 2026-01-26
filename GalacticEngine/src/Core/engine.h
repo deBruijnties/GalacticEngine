@@ -3,6 +3,7 @@
 #include <Core/Time.h>
 #include <Core/Debug/Profiler.h>
 #include <Core/Input/Mouse.h>
+#include <Core/Input/Input.h>
 
 struct GLFWwindow;
 class Scene;
@@ -41,8 +42,9 @@ namespace GalacticEngine::Core
 #pragma once
 
 namespace Math = GalacticEngine::Math;
-namespace Debug = GalacticEngine::Core::Debug;
 namespace Input = GalacticEngine::Core::Input;
+
+using Profiler = GalacticEngine::Core::Profiling::Profiler;
 
 using Vector2 = GalacticEngine::Vector2;
 using Vector3 = GalacticEngine::Vector3;

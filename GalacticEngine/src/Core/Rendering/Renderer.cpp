@@ -138,13 +138,13 @@ void Renderer::EndCamera()
     {
         glEnable(GL_CULL_FACE);
 
-        Debug::Profiler::PROFILE_SCOPE("Deferred Opaque Pass");
+        PROFILE_SCOPE("Deferred Opaque Pass");
         DefferedOpaquePass();
     }
 
     // SET CAMERA OUTPUT
     {
-        Debug::Profiler::PROFILE_SCOPE("Bind Camera Framebufffer and blit depth");
+        PROFILE_SCOPE("Bind Camera Framebufffer and blit depth");
 
         s_currentRenderingCamera->BindInternal();
 
@@ -171,19 +171,19 @@ void Renderer::EndCamera()
 
     // LIGHTING PASS
     {
-        Debug::Profiler::PROFILE_SCOPE("Deferred Lighting Pass");
+        PROFILE_SCOPE("Deferred Lighting Pass");
         DefferedLightingPass();
     }
 
     // FORWARD UNLIT PASS
     {
-        Debug::Profiler::PROFILE_SCOPE("Forward Unlit Pass");
+        PROFILE_SCOPE("Forward Unlit Pass");
         ForwardUnlitPass();
     }
 
     // FORWARD TRANSPARENT PASS
     {
-        Debug::Profiler::PROFILE_SCOPE("Forward Transparent Pass");
+        PROFILE_SCOPE("Forward Transparent Pass");
         ForwardTransparentPass();
     }
     

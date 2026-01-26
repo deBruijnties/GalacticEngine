@@ -155,6 +155,8 @@
   <ItemGroup>
     <ClInclude Include="src\Core\Debug\Profiler.h" />
     <ClInclude Include="src\Core\engine.h" />
+    <ClInclude Include="src\Core\Input\Input.h" />
+    <ClInclude Include="src\Core\Input\KeyCodes.h" />
     <ClInclude Include="src\Core\Input\Mouse.h" />
     <ClInclude Include="src\Core\Math\Math.h" />
     <ClInclude Include="src\Core\Math\Types.h" />
@@ -184,6 +186,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\Core\engine.cpp" />
+    <ClCompile Include="src\Core\Input\Input.cpp" />
     <ClCompile Include="src\Core\Input\Mouse.cpp" />
     <ClCompile Include="src\Core\Math\Math.cpp" />
     <ClCompile Include="src\Core\Math\Types.cpp" />

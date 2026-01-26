@@ -5,9 +5,6 @@
 #include <iostream>
 #include <iomanip>
 
-namespace GalacticEngine::Core::Debug
-{
-
 #if _DEBUG
 #define PROFILE_SCOPE(name) Profiler::ScopedTimer timer##__LINE__(name)
 #define PROFILE_FUNCTION() PROFILE_SCOPE(__FUNCTION__)
@@ -16,6 +13,8 @@ namespace GalacticEngine::Core::Debug
 #define PROFILE_FUNCTION()
 #endif
 
+namespace GalacticEngine::Core::Profiling
+{
     class Profiler
     {
     public:
