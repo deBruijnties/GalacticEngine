@@ -131,6 +131,7 @@ namespace GalacticEngine::Core
             }
             {
                 PROFILE_SCOPE("swapbuffers");
+                glBindFramebuffer(GL_FRAMEBUFFER, 0);
                 glfwSwapBuffers(window);
             }
 

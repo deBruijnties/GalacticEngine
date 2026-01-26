@@ -8,7 +8,6 @@
 #include <random>
 #include <algorithm>
 
-// ================= RANDOM =================
 
 float Rand01()
 {
@@ -26,7 +25,6 @@ Vector3 RandomUnitVector()
     return { r * cosf(a), r * sinf(a), z };
 }
 
-// ================= PARTICLES =================
 
 void ParticleSystem::ResetParticle(Particle& particle)
 {
@@ -36,6 +34,7 @@ void ParticleSystem::ResetParticle(Particle& particle)
         particle.position = Vector3();
 
     particle.velocity = randomVelocity ? RandomUnitVector() * baseSpeed : Vector3();
+    particle.anglualarVelocity = randomAngularVelocity ? RandomUnitVector() *5 : Vector3();
     particle.life = 0.0f;
     particle.size = baseSize;
 }
@@ -72,7 +71,6 @@ void ParticleSystem::Burst(int count)
     SpawnParticle(count);
 }
 
-// ================= LIFECYCLE =================
 
 void ParticleSystem::OnStart()
 {
@@ -86,7 +84,6 @@ void ParticleSystem::OnStart()
     particleInstanceBuffer->Allocate(std::max<size_t>(1, particles.size()));
 }
 
-// ================= UPDATE =================
 
 void ParticleSystem::OnUpdate()
 {
@@ -125,12 +122,14 @@ void ParticleSystem::OnUpdate()
 
         // Simulate
         p.position += p.velocity * Time::deltaTime;
+        p.rotation += p.anglualarVelocity * Time::deltaTime;
 
         float t = p.life / baseLifeTime;
         p.size = Math::Lerp(baseSize, 0.0f, t);
 
         Matrix4 m = Matrix4::Identity();
         m = Math::Translate(m, p.position);
+        m = Math::Rotate(m, Quaternion::FromEuler(p.rotation));
         m = Math::Scale(m, Vector3(p.size, p.size, p.size));
 
         if (!worldSpace)
@@ -159,7 +158,6 @@ void ParticleSystem::OnUpdate()
     std::cout << "active: " << aliveCount << "\n";
 }
 
-// ================= RENDER =================
 
 void ParticleSystem::OnSubmitRender()
 {

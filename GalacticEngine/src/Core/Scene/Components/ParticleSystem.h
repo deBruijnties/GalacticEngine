@@ -13,7 +13,9 @@ protected:
     struct Particle
     {
         Vector3 position;
+        Vector3 rotation;
         Vector3 velocity;
+        Vector3 anglualarVelocity;
         float  size;
         Vector4 color;
         float  life;
@@ -32,6 +34,7 @@ public:
     float baseSpeed = 1;
     float baseSize = 1;
     bool randomVelocity = true;
+    bool randomAngularVelocity = true;
     bool worldSpace = false;
     bool loop = true;
     bool autostart = true;
