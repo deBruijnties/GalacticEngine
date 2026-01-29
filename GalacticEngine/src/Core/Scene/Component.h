@@ -8,6 +8,7 @@ public:
     GameObject* gameObject = nullptr;
     Transform* transform = nullptr;
 
+    Component() = default;
     virtual ~Component() {}
 
     // Called once when the object becomes active

@@ -28,7 +28,7 @@ public:
     Vector2Int GetResolution() const;
     float GetAspect() const;
     FrameBuffer* GetOutput();
-    FrameBuffer& GetInternalOutput();
+    FrameBuffer* GetInternalOutput();
 
     void SetFOV(float v);
     void SetNearPlane(float v);

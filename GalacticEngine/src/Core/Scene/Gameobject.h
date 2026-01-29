@@ -41,7 +41,11 @@ public:
     }
 
     template<typename T, typename... Args>
-    T* addComponent(Args&&... args) {
+    T* addComponent(Args&&... args)
+    {
+        static_assert(!std::is_base_of<Transform, T>::value,
+            "ERROR: Use setTransform<T>() for Transform components!");
+
         auto comp = std::make_unique<T>(std::forward<Args>(args)...);
         comp->gameObject = this;
         comp->transform = transform;
@@ -49,6 +53,7 @@ public:
         components.push_back(std::move(comp));
         return ptr;
     }
+
 
     template<typename T>
     T* getComponent() {

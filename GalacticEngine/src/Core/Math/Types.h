@@ -269,6 +269,8 @@ namespace GalacticEngine
             return r;
         }
 
+
+
         static Matrix4 Rotate(const Quaternion& q)
         {
             Quaternion nq = q.Normalized();

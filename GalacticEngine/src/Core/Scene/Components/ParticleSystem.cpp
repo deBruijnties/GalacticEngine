@@ -34,7 +34,7 @@ void ParticleSystem::ResetParticle(Particle& particle)
         particle.position = Vector3();
 
     particle.velocity = randomVelocity ? RandomUnitVector() * baseSpeed : Vector3();
-    particle.anglualarVelocity = randomAngularVelocity ? RandomUnitVector() *5 : Vector3();
+    particle.anglualarVelocity = randomAngularVelocity ? RandomUnitVector() * 5 : Vector3();
     particle.life = 0.0f;
     particle.size = baseSize;
 }
@@ -154,8 +154,6 @@ void ParticleSystem::OnUpdate()
 
     // Upload
     particleInstanceBuffer->Upload();
-
-    std::cout << "active: " << aliveCount << "\n";
 }
 
 

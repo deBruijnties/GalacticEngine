@@ -153,6 +153,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Core\Scene\Components\UI\Canvas.h" />
     <ClInclude Include="src\Core\Scene\Components\ParticleSystem.h" />
     <ClInclude Include="src\Core\Debug\Profiler.h" />
     <ClInclude Include="src\Core\engine.h" />
@@ -179,9 +180,11 @@
     <ClInclude Include="src\Core\Scene\Gameobject.h" />
     <ClInclude Include="src\Core\Scene\Scene.h" />
     <ClInclude Include="src\Core\Time.h" />
+    <ClInclude Include="src\Core\Utils\printmat4.h" />
     <ClInclude Include="src\pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Core\Scene\Components\UI\Canvas.cpp" />
     <ClCompile Include="Dependencies\GLAD\src\glad.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
@@ -208,6 +211,7 @@
     <ClCompile Include="src\Core\Scene\Gameobject.cpp" />
     <ClCompile Include="src\Core\Scene\Scene.cpp" />
     <ClCompile Include="src\Core\Time.cpp" />
+    <ClCompile Include="src\Core\Utils\printmat4.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

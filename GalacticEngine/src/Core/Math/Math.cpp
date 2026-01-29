@@ -3,12 +3,14 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include <glm/geometric.hpp>
 
 namespace GalacticEngine::Math
 {
 
     static glm::vec2 ToGLM(const Vector2& v) { return { v.x, v.y}; }
-    static Vector2 FromGLM(const glm::vec2& v) { return { v.x, v.y}; }
+    static Vector2 FromGLM(const glm::vec2& v) { return { v.x, v.y }; }
+
     // Conversion helpers (PRIVATE)
     static glm::vec3 ToGLM(const Vector3& v) { return { v.x, v.y, v.z }; }
     static Vector3 FromGLM(const glm::vec3& v) { return { v.x, v.y, v.z }; }
@@ -92,6 +94,11 @@ namespace GalacticEngine::Math
         return glm::dot(ToGLM(a), ToGLM(b));
     }
 
+    Vector2 Lerp(const Vector2& a, const Vector2& b, float t)
+    {
+        return FromGLM(glm::mix(ToGLM(a), ToGLM(b), t));
+    }
+
     Vector3 Cross(const Vector3& a, const Vector3& b)
     {
         return FromGLM(glm::cross(ToGLM(a), ToGLM(b)));
@@ -123,6 +130,16 @@ namespace GalacticEngine::Math
     Matrix4 Transpose(const Matrix4& m)
     {
         return FromGLM(glm::transpose(ToGLM(m)));
+    }
+
+    Matrix4 ortho(float left, float right, float bottom, float top, float zNear, float zFar)
+    {
+        return FromGLM(glm::ortho(left, right, bottom, top, zNear, zFar));
+    }
+
+    Matrix4 ortho(float left, float right, float bottom, float top)
+    {
+        return FromGLM(glm::ortho(left, right, bottom, top));
     }
 
     Matrix4 perspective(float fov, float aspect, float nearPlane, float farPlane)

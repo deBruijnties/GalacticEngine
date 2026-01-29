@@ -13,6 +13,8 @@ class Camera;
 class Renderer
 {
 public:
+
+
     struct RenderCommand
     {
         Mesh* mesh;
@@ -63,6 +65,7 @@ private:
 
 	static Camera* s_currentCamera; // cam displayed to screen
 	static Camera* s_currentRenderingCamera; // cam being currently rendered
+
 
     static std::vector<RenderCommand> s_OpaqueQueue;
     static std::vector<RenderCommand> s_OpaqueUnlitQueue;

@@ -4,6 +4,7 @@
 #include <core/Rendering/Mesh/Mesh.h>
 #include <core/Rendering/Mesh/FullScreenQuad.h>
 #include <Core/Rendering/Resources/Material.h>
+#include <Core/Rendering/buffers/framebuffer.h>
 #include <Core/Rendering/buffers/StructuredBuffer.h>
 #include <Core/Rendering/Resources/Shader.h>
 #include <Core/Scene/Components/Transform.h>
@@ -15,6 +16,7 @@
 #include <core/Scene/Gameobject.h>
 #include <Core/Debug/Profiler.h>
 #include <Core/Time.h>
+#include <Core/Utils/printmat4.h>
 
 //#define debugRenderingFence
 
@@ -22,6 +24,7 @@ Camera* Renderer::s_currentCamera = nullptr;
 Camera* Renderer::s_currentRenderingCamera = nullptr;
 
 Shader* ditherShader;
+
 
 std::vector<Renderer::RenderCommand> Renderer::s_OpaqueQueue;
 std::vector<Renderer::RenderCommand> Renderer::s_OpaqueUnlitQueue;
@@ -150,14 +153,14 @@ void Renderer::EndCamera()
 
         glBindFramebuffer(
             GL_FRAMEBUFFER,
-            s_currentRenderingCamera->GetInternalOutput().fbo
+            s_currentRenderingCamera->GetInternalOutput()->fbo
         );
 
         glClearColor(0, 0, 0, 1);
         glClear(GL_COLOR_BUFFER_BIT);
 
         glBindFramebuffer(GL_READ_FRAMEBUFFER, s_currentRenderingCamera->gbuffer.FBO);
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, s_currentRenderingCamera->GetInternalOutput().fbo);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, s_currentRenderingCamera->GetInternalOutput()->fbo);
 
         glBlitFramebuffer(
             0, 0, s_currentRenderingCamera->GetResolution().x, s_currentRenderingCamera->GetResolution().y,
@@ -191,7 +194,7 @@ void Renderer::EndCamera()
 
 
 
-
+    UIPass();
 
 
 
@@ -224,7 +227,7 @@ void Renderer::EndCamera()
     // Draw
     ditherShader->bind();
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, s_currentRenderingCamera->GetInternalOutput().colorTex);
+    glBindTexture(GL_TEXTURE_2D, s_currentRenderingCamera->GetInternalOutput()->colorTex);
     //glBindTexture(GL_TEXTURE_2D, s_currentRenderingCamera->gbuffer.GetNormalRoughTex());//TEMP TEMP TEMP
     ditherShader->setInt("u_HDR", 0);
 
@@ -399,8 +402,9 @@ void Renderer::SkyboxPass()
 
 void Renderer::UIPass()
 {
-    // UI
+  
 }
+
 
 
 
@@ -446,4 +450,6 @@ void Renderer::SubmitPointLight(const Vector3& pos, float radius, const Vector3&
     
     s_PointLightBuffer->Set(s_PointLightCount++, light);
 }
+
+
 

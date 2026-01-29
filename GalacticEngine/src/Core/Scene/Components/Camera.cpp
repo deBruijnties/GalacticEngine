@@ -78,9 +78,9 @@ FrameBuffer* Camera::GetOutput()
 	return output;
 }
 
-FrameBuffer& Camera::GetInternalOutput()
+FrameBuffer* Camera::GetInternalOutput()
 {
-    return internalOutput;
+    return &internalOutput;
 }
 
 void Camera::SetFOV(float v)

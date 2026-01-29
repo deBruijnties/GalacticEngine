@@ -7,6 +7,7 @@
 class Transform : public Component
 {
 public:
+
     // Local transform
     Vector3 localPosition{ 0.f, 0.f, 0.f };
     Quaternion localRotation = Quaternion::Identity();

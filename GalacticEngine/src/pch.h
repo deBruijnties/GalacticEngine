@@ -11,6 +11,7 @@
 #include <Core/Rendering/Resources/Material.h>
 #include <Core/Rendering/Resources/Texture.h>
 #include <Core/Scene/Scene.h>
+#include <Core/Scene/Components/Transform.h>
 #include <Core/Scene/Components/Camera.h>
 #include <Core/Input/Mouse.h>
 #include <String>

@@ -20,6 +20,7 @@ namespace GalacticEngine::Math
 
     //Vector2 operations
     float Dot(const Vector2& a, const Vector2& b);
+    Vector2 Lerp(const Vector2& a, const Vector2& b, float t);
 
 
 	//Vector3 operations
@@ -41,6 +42,8 @@ namespace GalacticEngine::Math
     Matrix4 Inverse(const Matrix4& m);
     Matrix4 Transpose(const Matrix4& m);
     Matrix4 perspective(float Fov, float Aspect, float nearPlane, float farPlane);
+    Matrix4 ortho(float left, float right, float bottom, float top, float zNear, float zFar);
+    Matrix4 ortho(float left, float right, float bottom, float top);
 
 
     //Matrix3 operations
