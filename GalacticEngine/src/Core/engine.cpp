@@ -12,7 +12,7 @@ namespace GalacticEngine::Core
 
     Engine::Engine(int Width, int Height, const char* Title)
     {
-        Shader::AddIncludeDirectory("assets/shaders/RendererShaders/Lighting");
+        Shader::AddIncludeDirectory("engineassets/shaders/RendererShaders/Lighting");
 
 		// Set initial width and height
         width = Width;

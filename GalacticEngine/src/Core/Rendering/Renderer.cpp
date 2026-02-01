@@ -25,7 +25,6 @@ Camera* Renderer::s_currentRenderingCamera = nullptr;
 
 Shader* ditherShader;
 
-
 std::vector<Renderer::RenderCommand> Renderer::s_OpaqueQueue;
 std::vector<Renderer::RenderCommand> Renderer::s_OpaqueUnlitQueue;
 std::vector<Renderer::RenderCommand> Renderer::s_TransparentQueue;
@@ -50,13 +49,13 @@ void Renderer::Init(int width, int height)
         sizeof(GPUPointLight)
     );
     deferredLightingShader = new Shader(
-        "assets/shaders/RendererShaders/Fullscreen.vert",
-        "assets/shaders/RendererShaders/Lighting/GbufferCombine.frag",
+        "engineassets/shaders/RendererShaders/Fullscreen.vert",
+        "engineassets/shaders/RendererShaders/Lighting/GbufferCombine.frag",
         true
     );
     ditherShader = new Shader(
-        "assets/shaders/RendererShaders/Fullscreen.vert",
-        "assets/shaders/RendererShaders/Postprocessing/Dither.frag",
+        "engineassets/shaders/RendererShaders/Fullscreen.vert",
+        "engineassets/shaders/RendererShaders/Postprocessing/Dither.frag",
         true
     );
     

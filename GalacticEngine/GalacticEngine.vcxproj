@@ -123,7 +123,8 @@
       <AdditionalLibraryDirectories>$(ProjectDir)Dependencies/Assimp/lib;$(ProjectDir)Dependencies/GLFW/lib</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
-      <Command>xcopy /y /i "$(ProjectDir)Dependencies\Assimp\lib\assimp-vc143-mt.dll" "$(TargetDir)"</Command>
+      <Command>xcopy /y /i "$(ProjectDir)Dependencies\Assimp\lib\assimp-vc143-mt.dll" "$(TargetDir)"
+xcopy /y /e /i /d "$(ProjectDir)engineAssets" "$(TargetDir)engineassets\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -149,7 +150,8 @@
       <AdditionalLibraryDirectories>$(ProjectDir)Dependencies/Assimp/lib;$(ProjectDir)Dependencies/GLFW/lib</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
-      <Command>xcopy /y /i "$(ProjectDir)Dependencies\Assimp\lib\assimp-vc143-mt.dll" "$(TargetDir)"</Command>
+      <Command>xcopy /y /i "$(ProjectDir)Dependencies\Assimp\lib\assimp-vc143-mt.dll" "$(TargetDir)"
+xcopy /y /e /i /d "$(ProjectDir)engineAssets" "$(TargetDir)engineassets\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
