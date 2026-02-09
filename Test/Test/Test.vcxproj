@@ -21,12 +21,19 @@
   <ItemGroup>
     <ClInclude Include="Engine\Core\Math\Math.h" />
     <ClInclude Include="Engine\Core\Math\Types.h" />
+    <ClInclude Include="Engine\Core\Renderer\Backend\IMaterial.h" />
+    <ClInclude Include="Engine\Core\Renderer\Backend\IShader.h" />
     <ClInclude Include="Engine\Core\Renderer\GraphicsAPI.h" />
     <ClInclude Include="Engine\Core\Renderer\APIs\Vulkan\VulkanMesh.h" />
     <ClInclude Include="Engine\Core\Renderer\Frontend\Mesh.h" />
     <ClInclude Include="Engine\Core\Renderer\APIs\OpenGL\OpenGLMesh.h" />
     <ClInclude Include="Engine\Core\Renderer\Backend\IMesh.h" />
     <ClInclude Include="Engine\Core\Renderer\Renderer.h" />
+    <ClInclude Include="Engine\Core\Renderer\Frontend\Shader.h" />
+    <ClInclude Include="Engine\Core\Renderer\APIs\Vulkan\VulkanShader.h" />
+    <ClInclude Include="Engine\Core\Renderer\APIs\OpenGL\OpenGLShader.h" />
+    <ClInclude Include="Engine\Core\Renderer\Frontend\Material.h" />
+    <ClInclude Include="Engine\Core\Renderer\APIs\OpenGL\OpenGLMaterial.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Core\Math\Math.cpp" />
@@ -35,6 +42,11 @@
     <ClCompile Include="Engine\Core\Renderer\Frontend\Mesh.cpp" />
     <ClCompile Include="Engine\Core\Renderer\APIs\OpenGL\OpenGLMesh.cpp" />
     <ClCompile Include="Engine\Core\Renderer\Renderer.cpp" />
+    <ClCompile Include="Engine\Core\Renderer\Frontend\Shader.cpp" />
+    <ClCompile Include="Engine\Core\Renderer\APIs\Vulkan\VulkanShader.cpp" />
+    <ClCompile Include="Engine\Core\Renderer\APIs\OpenGL\OpenGLShader.cpp" />
+    <ClCompile Include="Engine\Core\Renderer\Frontend\Material.cpp" />
+    <ClCompile Include="Engine\Core\Renderer\APIs\OpenGL\OpenGLMaterial.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>

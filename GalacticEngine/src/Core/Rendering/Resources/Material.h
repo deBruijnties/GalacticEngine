@@ -16,7 +16,7 @@ struct TextureSource
     Type type = Type::FileTexture;
 
     std::unique_ptr<Texture> ownedTexture; // owned
-    unsigned int externalID = 0;                 // not owned
+    unsigned int externalID = 0;           // not owned
     FrameBuffer* fb = nullptr;             // not owned
 };
 
