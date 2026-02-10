@@ -1,40 +1,43 @@
 #include "Renderer.h"
+#include <iostream>
+#include "core/Renderer/APIs/OpenGL/OpenGLRenderer.h"
+#include "core/Renderer/Backend/IRenderer.h"
 
 namespace GalacticEngine
 {
-
-    std::vector<Renderer::RenderCommand> Renderer::s_OpaqueQueue;
-    std::vector<Renderer::RenderCommand> Renderer::s_OpaqueUnlitQueue;
-    std::vector<Renderer::RenderCommand> Renderer::s_TransparentQueue;
-	std::vector<Renderer::RenderCommand> Renderer::s_ShadowQueue;
-
     GraphicsApi Renderer::selectedAPI = GraphicsApi::OpenGL;
+    std::unique_ptr<GalacticEngine::IRenderer> GalacticEngine::Renderer::renderer = nullptr;
+
+    void Renderer::Innit(GraphicsApi api)
+    {
+        selectedAPI = api;
+        switch (selectedAPI)
+        {
+        case GraphicsApi::OpenGL_es:
+        case GraphicsApi::OpenGL:
+            renderer = std::unique_ptr<IRenderer>(new OpenGLRenderer());
+            break;
+        case GraphicsApi::Vulkan:
+            //renderer = std::unique_ptr<IShader>(new VulkanShader());
+            std::cout << "Graphics API not Supported YET\n";
+            break;
+        default:
+            std::cout << "Graphics API not Supported\n";
+        }
+    }
 
     void Renderer::Submit(RenderCommand& cmd)
     {
-		// Shadow casting queue
-        if (cmd.CastsShadow)
-        {
-            s_ShadowQueue.push_back(cmd);
-        }
-        // Opaque and Transparent queue
-        if (cmd.material->Lit)
-        {
-            if (cmd.material->Opaque)
-            {
-                s_OpaqueQueue.push_back(cmd);
-            }
-            else
-            {
-                s_TransparentQueue.push_back(cmd);
-            }
-        }
-        // Unlit queue
-        else 
-        {
-            s_OpaqueUnlitQueue.push_back(cmd);
-		}
+        renderer->Submit(cmd);
     }
 
+    void Renderer::Render()
+    {
+        renderer->Render();
+    }
 
+    GraphicsApi Renderer::GetGraphicsApi()
+    {
+        return selectedAPI;
+    }
 }

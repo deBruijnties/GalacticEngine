@@ -5,7 +5,9 @@
 
 GalacticEngine::Material::Material(Shader* shader)
 {
+	std::cout << "Create Material\n";
 	SetShader(shader);
+	Innit();
 }
 
 GalacticEngine::Material::~Material()
@@ -73,7 +75,7 @@ void GalacticEngine::Material::SetFrameBufferTexture(const std::string& name, Fr
 
 void GalacticEngine::Material::Innit()
 {
-	switch (Renderer::selectedAPI)
+	switch (Renderer::GetGraphicsApi())
 	{
 	case GraphicsApi::OpenGL_es:
 	case GraphicsApi::OpenGL:

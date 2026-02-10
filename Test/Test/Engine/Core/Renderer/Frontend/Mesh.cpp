@@ -54,7 +54,7 @@ void GalacticEngine::Mesh::Draw(unsigned int instanceCount)
 
 void GalacticEngine::Mesh::Innit()
 {
-	switch (Renderer::selectedAPI)
+	switch (Renderer::GetGraphicsApi())
 	{
 	case GraphicsApi::OpenGL_es:
 	case GraphicsApi::OpenGL:

@@ -5,4 +5,5 @@
   </Configurations>
   <Project Path="Test/Test.vcxproj" Id="f3c0fb0f-4ee0-48fb-8b5d-4a10c1328d7b" />
   <Project Path="TestApp/TestApp.vcxproj" Id="482e310a-0693-4456-8892-49605b31f85b" />
+  <Project Path="Vulkan/Vulkan.vcxproj" Id="f236de89-a9ba-46cb-9e66-e8025c7aa744" />
 </Solution>

@@ -17,7 +17,7 @@ GalacticEngine::Shader::~Shader()
 
 void GalacticEngine::Shader::Innit()
 {
-	switch (Renderer::selectedAPI)
+	switch (Renderer::GetGraphicsApi())
 	{
 	case GraphicsApi::OpenGL_es:
 	case GraphicsApi::OpenGL:

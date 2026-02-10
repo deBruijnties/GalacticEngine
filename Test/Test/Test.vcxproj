@@ -28,12 +28,16 @@
     <ClInclude Include="Engine\Core\Renderer\Frontend\Mesh.h" />
     <ClInclude Include="Engine\Core\Renderer\APIs\OpenGL\OpenGLMesh.h" />
     <ClInclude Include="Engine\Core\Renderer\Backend\IMesh.h" />
+    <ClInclude Include="Engine\Core\Renderer\RenderCommand.h" />
     <ClInclude Include="Engine\Core\Renderer\Renderer.h" />
     <ClInclude Include="Engine\Core\Renderer\Frontend\Shader.h" />
     <ClInclude Include="Engine\Core\Renderer\APIs\Vulkan\VulkanShader.h" />
     <ClInclude Include="Engine\Core\Renderer\APIs\OpenGL\OpenGLShader.h" />
     <ClInclude Include="Engine\Core\Renderer\Frontend\Material.h" />
     <ClInclude Include="Engine\Core\Renderer\APIs\OpenGL\OpenGLMaterial.h" />
+    <ClInclude Include="Engine\Core\Renderer\APIs\OpenGL\OpenGLRenderer.h" />
+    <ClInclude Include="Engine\Core\Renderer\Backend\IRenderer.h" />
+    <ClInclude Include="Engine\Core\Window\Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Core\Math\Math.cpp" />
@@ -47,6 +51,8 @@
     <ClCompile Include="Engine\Core\Renderer\APIs\OpenGL\OpenGLShader.cpp" />
     <ClCompile Include="Engine\Core\Renderer\Frontend\Material.cpp" />
     <ClCompile Include="Engine\Core\Renderer\APIs\OpenGL\OpenGLMaterial.cpp" />
+    <ClCompile Include="Engine\Core\Renderer\APIs\OpenGL\OpenGLRenderer.cpp" />
+    <ClCompile Include="Engine\Core\Window\Window.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
@@ -143,7 +149,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\GLM\include;$(ProjectDir)Engine</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.4.341.1\Include;$(ProjectDir)Dependencies\GLM\include;$(ProjectDir)Engine;$(ProjectDir)Dependencies\GLFW\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -151,7 +157,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\VulkanSDK\1.4.341.1\Lib;$(ProjectDir)Dependencies\GLFW\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vulkan-1.lib; glfw3.lib;opengl32.lib;</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -163,14 +170,19 @@
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.4.341.1\Include;$(ProjectDir)Dependencies\GLM\include;$(ProjectDir)Engine;$(ProjectDir)Dependencies\GLFW\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
       </SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>C:\VulkanSDK\1.4.341.1\Lib;$(ProjectDir)Dependencies\GLFW\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vulkan-1.lib; glfw3.lib;opengl32.lib;</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
