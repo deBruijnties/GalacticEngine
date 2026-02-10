@@ -6,8 +6,8 @@
 GalacticEngine::Material::Material(Shader* shader)
 {
 	std::cout << "Create Material\n";
-	SetShader(shader);
 	Innit();
+	SetShader(shader);
 }
 
 GalacticEngine::Material::~Material()
@@ -17,47 +17,32 @@ GalacticEngine::Material::~Material()
 
 void GalacticEngine::Material::SetShader(Shader* s)
 {
-	shader = s;
+	material->shader = s;
 }
 
 void GalacticEngine::Material::SetFloat(const std::string& name, float value)
 {
+	material->floatUniforms[name] = value;
 }
 
 void GalacticEngine::Material::SetBool(const std::string& name, bool value)
 {
+	material->boolUniforms[name] = value;
 }
 
 void GalacticEngine::Material::SetVec3(const std::string& name, const Vector3& value)
 {
+	material->vec3Uniforms[name] = value;
 }
 
 void GalacticEngine::Material::SetMat4(const std::string& name, const Matrix4& value)
 {
+	material->mat4Uniforms[name] = value;
 }
 
 void GalacticEngine::Material::SetInt(const std::string& name, const int value)
 {
-}
-
-void GalacticEngine::Material::SetGlobalFloat(const std::string& name, float value)
-{
-}
-
-void GalacticEngine::Material::SetGlobalBool(const std::string& name, bool value)
-{
-}
-
-void GalacticEngine::Material::SetGlobalVec3(const std::string& name, const Vector3& value)
-{
-}
-
-void GalacticEngine::Material::SetGlobalMat4(const std::string& name, const Matrix4& value)
-{
-}
-
-void GalacticEngine::Material::SetGlobalInt(const std::string& name, const int value)
-{
+	material->intUniforms[name] = value;
 }
 
 void GalacticEngine::Material::SetTexture(const std::string& name, const std::string& filePath, bool flip)
@@ -71,6 +56,11 @@ void GalacticEngine::Material::SetExternalTexture(const std::string& name, unsig
 void GalacticEngine::Material::SetFrameBufferTexture(const std::string& name, FrameBuffer* fb)
 {
 
+}
+
+GalacticEngine::IMaterial* GalacticEngine::Material::GetBackend()
+{
+	return material.get();
 }
 
 void GalacticEngine::Material::Innit()

@@ -2,6 +2,7 @@
 #include <iostream>
 #include "core/Renderer/APIs/OpenGL/OpenGLRenderer.h"
 #include "core/Renderer/Backend/IRenderer.h"
+#include <Core/Window/Window.h>
 
 namespace GalacticEngine
 {
@@ -11,6 +12,7 @@ namespace GalacticEngine
     void Renderer::Innit(GraphicsApi api)
     {
         selectedAPI = api;
+
         switch (selectedAPI)
         {
         case GraphicsApi::OpenGL_es:
@@ -23,6 +25,8 @@ namespace GalacticEngine
             break;
         default:
             std::cout << "Graphics API not Supported\n";
+            break;
+
         }
     }
 

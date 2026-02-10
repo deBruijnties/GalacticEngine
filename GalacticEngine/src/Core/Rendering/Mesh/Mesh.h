@@ -10,10 +10,12 @@ public:
     Mesh();
     Mesh(const std::vector<Vector3>& vertices, const std::vector<unsigned int>& indices, const std::vector<Vector2>& uvs, const std::vector<Vector3>& normals, const std::vector<Vector4>& colors);
     ~Mesh();
+    static Mesh LoadMeshFromFile(const std::string& filepath);
+
+
     void Bind() const;
     void Unbind() const;
     void GenerateBuffers(bool dynamicDraw = false);
-    static Mesh LoadMeshFromFile(const std::string& filepath);
     void GenerateNormals();
     void Draw() const;
     void DrawInstanced(unsigned int instanceCount) const;

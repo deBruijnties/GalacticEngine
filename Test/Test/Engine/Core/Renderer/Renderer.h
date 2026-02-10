@@ -4,6 +4,7 @@
 #include "core/Renderer/GraphicsAPI.h"
 #include "core/Renderer/Backend/IRenderer.h"
 #include "core/Renderer/RenderCommand.h"
+#include "core/Window/Window.h"
 
 namespace GalacticEngine
 {

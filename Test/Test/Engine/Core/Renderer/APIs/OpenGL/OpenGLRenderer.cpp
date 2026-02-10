@@ -1,5 +1,9 @@
 #include "OpenGLRenderer.h"
+#include <core/Renderer/APIs/OpenGL/OpenGLMaterial.h>
+#include <GLAD/glad.h>
+#include <GLFW/glfw3.h>
 #include <iostream>
+#include <memory>
 
 namespace GalacticEngine
 {
@@ -15,13 +19,19 @@ namespace GalacticEngine
 
 
 
-	void OpenGLRenderer::Init(int width, int height)
+	OpenGLRenderer::OpenGLRenderer()
 	{
+		std::cout << "initializing GLAD\n";
+		// Load OpenGL functions
+		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+			std::cerr << "Failed to initialize GLAD\n";
+			glfwTerminate();
+			return;
+		}
 	}
 
 	void OpenGLRenderer::Submit(RenderCommand& cmd)
 	{
-		std::cout << "Submit\n";
 
 		if (cmd.CastsShadow)
 		{
@@ -40,31 +50,39 @@ namespace GalacticEngine
 	
 	void OpenGLRenderer::Render()
 	{
-		std::cout << "Render - Shadows\n";
+		glClearColor(1, 0, 0, 1);
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		//std::cout << "Render - Shadows\n";
 		for (const RenderCommand& cmd : s_ShadowQueue)
 		{
+			OpenGLMaterial* glMat = static_cast<OpenGLMaterial*>(cmd.material->GetBackend()); // raw pointer cast
+			glMat->Use();
+			cmd.mesh->Draw(1);
 		}
 
-		std::cout << "Render - opaque lit\n";
+		//std::cout << "Render - opaque lit\n";
 		for (const RenderCommand& cmd : s_OpaqueQueue)
 		{
 		}
 
-		std::cout << "Render - opaque unlit\n";
+		//std::cout << "Render - opaque unlit\n";
 		for (const RenderCommand& cmd : s_OpaqueUnlitQueue)
 		{
 		}
 
-		std::cout << "Render - Transparent lit\n";
+		//std::cout << "Render - Transparent lit\n";
 		for (const RenderCommand& cmd : s_TransparentQueue)
 		{
 		}
 
-		std::cout << "Render - Transparent unlit\n";
+		//std::cout << "Render - Transparent unlit\n";
 		for (const RenderCommand& cmd : s_TransparentUnlitQueue)
 		{
 		}
 
+		
+		ClearQueues();
 	}
 
 	void OpenGLRenderer::Release()

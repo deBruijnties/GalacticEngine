@@ -7,12 +7,18 @@ namespace GalacticEngine
 	{
     public:
         void Draw(uint32_t instanceCount) override;
+        void Upload() override;
         void Upload(const std::vector<Vector3>& vertices,
             const std::vector<uint32_t>& indices,
             const std::vector<Vector2>& uvs,
             const std::vector<Vector3>& normals,
-            const std::vector<Vector4>& colors) override;
+            const std::vector<Vector4>& colors,
+            const std::vector<Vector3>& tangents,
+            bool dynamicBuffers = false) override;
         void Release() override;
+
+        void Bind();
+        void Unbind();
         
     private:
         unsigned int _vao = 0;

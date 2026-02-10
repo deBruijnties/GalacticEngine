@@ -7,7 +7,7 @@ namespace GalacticEngine
     class OpenGLRenderer : public IRenderer
     {
     public:
-        void Init(int width, int height) override;
+        OpenGLRenderer();
 
         void Submit(RenderCommand& cmd) override;
 

@@ -24,14 +24,12 @@
     <ClInclude Include="Engine\Core\Renderer\Backend\IMaterial.h" />
     <ClInclude Include="Engine\Core\Renderer\Backend\IShader.h" />
     <ClInclude Include="Engine\Core\Renderer\GraphicsAPI.h" />
-    <ClInclude Include="Engine\Core\Renderer\APIs\Vulkan\VulkanMesh.h" />
     <ClInclude Include="Engine\Core\Renderer\Frontend\Mesh.h" />
     <ClInclude Include="Engine\Core\Renderer\APIs\OpenGL\OpenGLMesh.h" />
     <ClInclude Include="Engine\Core\Renderer\Backend\IMesh.h" />
     <ClInclude Include="Engine\Core\Renderer\RenderCommand.h" />
     <ClInclude Include="Engine\Core\Renderer\Renderer.h" />
     <ClInclude Include="Engine\Core\Renderer\Frontend\Shader.h" />
-    <ClInclude Include="Engine\Core\Renderer\APIs\Vulkan\VulkanShader.h" />
     <ClInclude Include="Engine\Core\Renderer\APIs\OpenGL\OpenGLShader.h" />
     <ClInclude Include="Engine\Core\Renderer\Frontend\Material.h" />
     <ClInclude Include="Engine\Core\Renderer\APIs\OpenGL\OpenGLMaterial.h" />
@@ -40,14 +38,13 @@
     <ClInclude Include="Engine\Core\Window\Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Dependencies\GLAD\src\glad.c" />
     <ClCompile Include="Engine\Core\Math\Math.cpp" />
     <ClCompile Include="Engine\Core\Math\Types.cpp" />
-    <ClCompile Include="Engine\Core\Renderer\APIs\Vulkan\VulkanMesh.cpp" />
     <ClCompile Include="Engine\Core\Renderer\Frontend\Mesh.cpp" />
     <ClCompile Include="Engine\Core\Renderer\APIs\OpenGL\OpenGLMesh.cpp" />
     <ClCompile Include="Engine\Core\Renderer\Renderer.cpp" />
     <ClCompile Include="Engine\Core\Renderer\Frontend\Shader.cpp" />
-    <ClCompile Include="Engine\Core\Renderer\APIs\Vulkan\VulkanShader.cpp" />
     <ClCompile Include="Engine\Core\Renderer\APIs\OpenGL\OpenGLShader.cpp" />
     <ClCompile Include="Engine\Core\Renderer\Frontend\Material.cpp" />
     <ClCompile Include="Engine\Core\Renderer\APIs\OpenGL\OpenGLMaterial.cpp" />
@@ -149,7 +146,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>C:\VulkanSDK\1.4.341.1\Include;$(ProjectDir)Dependencies\GLM\include;$(ProjectDir)Engine;$(ProjectDir)Dependencies\GLFW\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.4.341.1\Include;$(ProjectDir)Engine;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\Assimp\include;$(ProjectDir)Dependencies\GLM\include;$(ProjectDir)Dependencies\GLAD\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -157,9 +154,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>C:\VulkanSDK\1.4.341.1\Lib;$(ProjectDir)Dependencies\GLFW\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>vulkan-1.lib; glfw3.lib;opengl32.lib;</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\VulkanSDK\1.4.341.1\Lib;$(ProjectDir)Dependencies\GLFW\lib;$(ProjectDir)Dependencies\Assimp\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vulkan-1.lib; glfw3.lib;opengl32.lib;assimp-vc143-mt.lib;zlibstaticd.lib;</AdditionalDependencies>
     </Lib>
+    <PostBuildEvent>
+      <Command>xcopy /y /i "$(ProjectDir)Dependencies\Assimp\lib\assimp-vc143-mt.dll" "$(TargetDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -172,7 +172,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>C:\VulkanSDK\1.4.341.1\Include;$(ProjectDir)Dependencies\GLM\include;$(ProjectDir)Engine;$(ProjectDir)Dependencies\GLFW\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.4.341.1\Include;$(ProjectDir)Engine;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\Assimp\include;$(ProjectDir)Dependencies\GLM\include;$(ProjectDir)Dependencies\GLAD\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -180,9 +180,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>C:\VulkanSDK\1.4.341.1\Lib;$(ProjectDir)Dependencies\GLFW\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>vulkan-1.lib; glfw3.lib;opengl32.lib;</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\VulkanSDK\1.4.341.1\Lib;$(ProjectDir)Dependencies\GLFW\lib;$(ProjectDir)Dependencies\Assimp\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vulkan-1.lib; glfw3.lib;opengl32.lib;assimp-vc143-mt.lib;zlibstaticd.lib;</AdditionalDependencies>
     </Lib>
+    <PostBuildEvent>
+      <Command>xcopy /y /i "$(ProjectDir)Dependencies\Assimp\lib\assimp-vc143-mt.dll" "$(TargetDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

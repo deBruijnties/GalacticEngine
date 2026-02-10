@@ -1,21 +1,28 @@
 #pragma once
-class Window
+#include "core/Math/Types.h"
+
+namespace GalacticEngine
 {
-public:
-    
-    Window(int width, int height, const char* Title = "");
+    class Window
+    {
+    public:
 
-    ~Window();
+        Window(int width, int height, const char* Title = "");
 
-    void SetTitle(const char* Title = "");
+        ~Window();
 
-    void PollEvents();
+        void SetTitle(const char* Title = "");
 
-    bool ShouldClose();
+        void PollEvents();
 
-    void Release();
+        bool ShouldClose();
 
-private:
-    
-};
+        void Release();
 
+        Vector2Int GetSize();
+
+    private:
+        Vector2Int Size;
+    };
+
+}

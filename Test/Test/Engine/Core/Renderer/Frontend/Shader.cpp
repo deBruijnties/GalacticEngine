@@ -2,7 +2,6 @@
 #include <iostream>
 #include "Core/Renderer/Renderer.h"
 #include "Core/Renderer/APIs/OpenGL/OpenGLShader.h"
-#include "Core/Renderer/APIs/Vulkan/VulkanShader.h"
 
 GalacticEngine::Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath)
 {
@@ -15,6 +14,11 @@ GalacticEngine::Shader::~Shader()
 	shader->Release();
 }
 
+GalacticEngine::IShader* GalacticEngine::Shader::GetBackend()
+{
+	return shader.get();
+}
+
 void GalacticEngine::Shader::Innit()
 {
 	switch (Renderer::GetGraphicsApi())
@@ -24,7 +28,7 @@ void GalacticEngine::Shader::Innit()
 		shader = std::unique_ptr<IShader>(new OpenGLShader());
 		break;
 	case GraphicsApi::Vulkan:
-		shader = std::unique_ptr<IShader>(new VulkanShader());
+		//shader = std::unique_ptr<IShader>(new VulkanShader());
 		break;
 	default:
 		std::cout << "Graphics API not Supported\n";

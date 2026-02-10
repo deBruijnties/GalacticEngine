@@ -13,7 +13,7 @@ namespace GalacticEngine
 		// Constructors
 		Mesh();
 		Mesh(const std::string Path);
-		Mesh(const std::vector<Vector3>& vertices, const std::vector<unsigned int>& indices, const std::vector<Vector2>& uvs, const std::vector<Vector3>& normals, const std::vector<Vector4>& colors);
+		Mesh(const std::vector<Vector3>& vertices, const std::vector<unsigned int>& indices, const std::vector<Vector2>& uvs, const std::vector<Vector3>& normals, const std::vector<Vector4>& colors, const std::vector<Vector4>& tangents, bool dynamicBuffers);
 		
 		// Deconstructor
 		~Mesh();
@@ -25,22 +25,17 @@ namespace GalacticEngine
 
 		// Drawing functions 
 		void Draw(unsigned int instanceCount);
-	private:
+
+		IMesh* GetBackend();
+
 		// Innit Backend Mesh
-		void Innit();
+		void Init();
 
 		// Upload Backend Mesh
 		void Upload();
 
-	private:
-		bool dirty = true;
-		std::vector<Vector3> vertices;
-		std::vector<uint32_t> indices;
-		std::vector<Vector2> uvs;
-		std::vector<Vector3> normals;
-		std::vector<Vector4> colors;
-
 		std::unique_ptr<IMesh> mesh;
+
 	};
 }
 

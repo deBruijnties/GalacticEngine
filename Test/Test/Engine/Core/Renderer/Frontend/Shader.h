@@ -14,6 +14,7 @@ namespace GalacticEngine
 		// Deconstructor
 		~Shader();
 
+		IShader* GetBackend();
 	private:
 		// Innit Backend Shader
 		void Innit();
