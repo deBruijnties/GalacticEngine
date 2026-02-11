@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -18,11 +18,44 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Core\Math\Math.h" />
+    <ClInclude Include="src\Core\Math\Types.h" />
+    <ClInclude Include="src\Core\Renderer\Backend\IMaterial.h" />
+    <ClInclude Include="src\Core\Renderer\Backend\IShader.h" />
+    <ClInclude Include="src\Core\Renderer\GraphicsAPI.h" />
+    <ClInclude Include="src\Core\Renderer\Frontend\Mesh.h" />
+    <ClInclude Include="src\Core\Renderer\APIs\OpenGL\OpenGLMesh.h" />
+    <ClInclude Include="src\Core\Renderer\Backend\IMesh.h" />
+    <ClInclude Include="src\Core\Renderer\RenderCommand.h" />
+    <ClInclude Include="src\Core\Renderer\Renderer.h" />
+    <ClInclude Include="src\Core\Renderer\Frontend\Shader.h" />
+    <ClInclude Include="src\Core\Renderer\APIs\OpenGL\OpenGLShader.h" />
+    <ClInclude Include="src\Core\Renderer\Frontend\Material.h" />
+    <ClInclude Include="src\Core\Renderer\APIs\OpenGL\OpenGLMaterial.h" />
+    <ClInclude Include="src\Core\Renderer\APIs\OpenGL\OpenGLRenderer.h" />
+    <ClInclude Include="src\Core\Renderer\Backend\IRenderer.h" />
+    <ClInclude Include="src\Core\Window\Window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Dependencies\GLAD\src\glad.c" />
+    <ClCompile Include="src\Core\Math\Math.cpp" />
+    <ClCompile Include="src\Core\Math\Types.cpp" />
+    <ClCompile Include="src\Core\Renderer\Frontend\Mesh.cpp" />
+    <ClCompile Include="src\Core\Renderer\APIs\OpenGL\OpenGLMesh.cpp" />
+    <ClCompile Include="src\Core\Renderer\Renderer.cpp" />
+    <ClCompile Include="src\Core\Renderer\Frontend\Shader.cpp" />
+    <ClCompile Include="src\Core\Renderer\APIs\OpenGL\OpenGLShader.cpp" />
+    <ClCompile Include="src\Core\Renderer\Frontend\Material.cpp" />
+    <ClCompile Include="src\Core\Renderer\APIs\OpenGL\OpenGLMaterial.cpp" />
+    <ClCompile Include="src\Core\Renderer\APIs\OpenGL\OpenGLRenderer.cpp" />
+    <ClCompile Include="src\Core\Window\Window.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <VCProjectVersion>17.0</VCProjectVersion>
+    <VCProjectVersion>18.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{2fe6acb7-c3e0-4eed-8599-6c85a960af0f}</ProjectGuid>
-    <RootNamespace>GalacticEngine</RootNamespace>
+    <ProjectGuid>{f3c0fb0f-4ee0-48fb-8b5d-4a10c1328d7b}</ProjectGuid>
+    <RootNamespace>Test</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -76,6 +109,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -84,6 +118,9 @@
       </SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /i "$(ProjectDir)Dependencies\Assimp\lib\assimp-vc143-mt.dll" "$(TargetDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -93,6 +130,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -101,6 +139,9 @@
       </SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /i "$(ProjectDir)Dependencies\Assimp\lib\assimp-vc143-mt.dll" "$(TargetDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -108,10 +149,10 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)Dependencies/Assimp/include;$(ProjectDir)Dependencies/GLAD/include;$(ProjectDir)Dependencies/GLFW/include;$(ProjectDir)Dependencies/GLM/include;$(ProjectDir)Dependencies/STB/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.4.341.1\Include;$(ProjectDir)src;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\Assimp\include;$(ProjectDir)Dependencies\GLM\include;$(ProjectDir)Dependencies\GLAD\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -119,12 +160,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;assimp-vc143-mt.lib%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies/Assimp/lib;$(ProjectDir)Dependencies/GLFW/lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\VulkanSDK\1.4.341.1\Lib;$(ProjectDir)Dependencies\GLFW\lib;$(ProjectDir)Dependencies\Assimp\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vulkan-1.lib; glfw3.lib;opengl32.lib;assimp-vc143-mt.lib;zlibstaticd.lib;</AdditionalDependencies>
     </Lib>
     <PostBuildEvent>
-      <Command>xcopy /y /i "$(ProjectDir)Dependencies\Assimp\lib\assimp-vc143-mt.dll" "$(TargetDir)"
-xcopy /y /e /i /d "$(ProjectDir)engineAssets" "$(TargetDir)engineassets\"</Command>
+      <Command>xcopy /y /i "$(ProjectDir)Dependencies\Assimp\lib\assimp-vc143-mt.dll" "$(TargetDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -135,10 +175,10 @@ xcopy /y /e /i /d "$(ProjectDir)engineAssets" "$(TargetDir)engineassets\"</Comma
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)Dependencies/Assimp/include;$(ProjectDir)Dependencies/GLAD/include;$(ProjectDir)Dependencies/GLFW/include;$(ProjectDir)Dependencies/GLM/include;$(ProjectDir)Dependencies/STB/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.4.341.1\Include;$(ProjectDir)src;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\Assimp\include;$(ProjectDir)Dependencies\GLM\include;$(ProjectDir)Dependencies\GLAD\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -146,81 +186,13 @@ xcopy /y /e /i /d "$(ProjectDir)engineAssets" "$(TargetDir)engineassets\"</Comma
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;assimp-vc143-mt.lib%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies/Assimp/lib;$(ProjectDir)Dependencies/GLFW/lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\VulkanSDK\1.4.341.1\Lib;$(ProjectDir)Dependencies\GLFW\lib;$(ProjectDir)Dependencies\Assimp\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vulkan-1.lib; glfw3.lib;opengl32.lib;assimp-vc143-mt.lib;zlibstaticd.lib;</AdditionalDependencies>
     </Lib>
     <PostBuildEvent>
-      <Command>xcopy /y /i "$(ProjectDir)Dependencies\Assimp\lib\assimp-vc143-mt.dll" "$(TargetDir)"
-xcopy /y /e /i /d "$(ProjectDir)engineAssets" "$(TargetDir)engineassets\"</Command>
+      <Command>xcopy /y /i "$(ProjectDir)Dependencies\Assimp\lib\assimp-vc143-mt.dll" "$(TargetDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="src\Core\Scene\Components\UI\Canvas.h" />
-    <ClInclude Include="src\Core\Scene\Components\ParticleSystem.h" />
-    <ClInclude Include="src\Core\Debug\Profiler.h" />
-    <ClInclude Include="src\Core\engine.h" />
-    <ClInclude Include="src\Core\Input\Input.h" />
-    <ClInclude Include="src\Core\Input\KeyCodes.h" />
-    <ClInclude Include="src\Core\Input\Mouse.h" />
-    <ClInclude Include="src\Core\Math\Math.h" />
-    <ClInclude Include="src\Core\Math\Types.h" />
-    <ClInclude Include="src\Core\Rendering\Buffers\framebuffer.h" />
-    <ClInclude Include="src\Core\Rendering\Buffers\gbuffer.h" />
-    <ClInclude Include="src\Core\Rendering\Buffers\StructuredBuffer.h" />
-    <ClInclude Include="src\Core\Rendering\Mesh\FullScreenQuad.h" />
-    <ClInclude Include="src\Core\Rendering\Mesh\Mesh.h" />
-    <ClInclude Include="src\Core\Rendering\Renderer.h" />
-    <ClInclude Include="src\Core\Rendering\Resources\Material.h" />
-    <ClInclude Include="src\Core\Rendering\Resources\Shader.h" />
-    <ClInclude Include="src\Core\Rendering\Resources\Texture.h" />
-    <ClInclude Include="src\Core\Scene\Component.h" />
-    <ClInclude Include="src\Core\Scene\Components\Camera.h" />
-    <ClInclude Include="src\Core\Scene\Components\Lighting\PointLight.h" />
-    <ClInclude Include="src\Core\Scene\Components\MeshRenderer.h" />
-    <ClInclude Include="src\Core\Scene\Components\MeshRendererInstanced.h" />
-    <ClInclude Include="src\Core\Scene\Components\Transform.h" />
-    <ClInclude Include="src\Core\Scene\Gameobject.h" />
-    <ClInclude Include="src\Core\Scene\Scene.h" />
-    <ClInclude Include="src\Core\Time.h" />
-    <ClInclude Include="src\Core\Utils\printmat4.h" />
-    <ClInclude Include="src\pch.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\Core\Scene\Components\UI\Canvas.cpp" />
-    <ClCompile Include="Dependencies\GLAD\src\glad.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="src\Core\Scene\Components\ParticleSystem.cpp" />
-    <ClCompile Include="src\Core\engine.cpp" />
-    <ClCompile Include="src\Core\Input\Input.cpp" />
-    <ClCompile Include="src\Core\Input\Mouse.cpp" />
-    <ClCompile Include="src\Core\Math\Math.cpp" />
-    <ClCompile Include="src\Core\Math\Types.cpp" />
-    <ClCompile Include="src\Core\Rendering\Buffers\FrameBuffer.cpp" />
-    <ClCompile Include="src\Core\Rendering\Buffers\gbuffer.cpp" />
-    <ClCompile Include="src\Core\Rendering\Buffers\StructuredBuffer.cpp" />
-    <ClCompile Include="src\Core\Rendering\Mesh\Mesh.cpp" />
-    <ClCompile Include="src\Core\Rendering\Renderer.cpp" />
-    <ClCompile Include="src\Core\Rendering\Resources\Material.cpp" />
-    <ClCompile Include="src\Core\Rendering\Resources\Shader.cpp" />
-    <ClCompile Include="src\Core\Rendering\Resources\Texture.cpp" />
-    <ClCompile Include="src\Core\Scene\Components\Camera.cpp" />
-    <ClCompile Include="src\Core\Scene\Components\Lighting\PointLight.cpp" />
-    <ClCompile Include="src\Core\Scene\Components\MeshRenderer.cpp" />
-    <ClCompile Include="src\Core\Scene\Components\MeshRendererInstanced.cpp" />
-    <ClCompile Include="src\Core\Scene\Components\Transform.cpp" />
-    <ClCompile Include="src\Core\Scene\Gameobject.cpp" />
-    <ClCompile Include="src\Core\Scene\Scene.cpp" />
-    <ClCompile Include="src\Core\Time.cpp" />
-    <ClCompile Include="src\Core\Utils\printmat4.cpp" />
-    <ClCompile Include="src\pch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -1,4 +1,3 @@
-#include <pch.h>
 #include "types.h"
 #include "Math.h"
 
