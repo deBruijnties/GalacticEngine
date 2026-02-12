@@ -277,7 +277,18 @@ void createSwapChain() {
     SwapChainSupportDetails swapChainSupport = querySwapChainSupport(physicalDevice);
 
     VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
-    VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
+    // Pick the fastest available present mode
+    VkPresentModeKHR presentMode = VK_PRESENT_MODE_FIFO_KHR; // fallback
+    for (const auto& availablePresentMode : swapChainSupport.presentModes) {
+        if (availablePresentMode == VK_PRESENT_MODE_IMMEDIATE_KHR) {
+            presentMode = VK_PRESENT_MODE_IMMEDIATE_KHR; // uncapped FPS
+            break;
+        }
+        else if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
+            presentMode = VK_PRESENT_MODE_MAILBOX_KHR; // vsync but low latency
+        }
+    }
+
     VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities);
 
     uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
@@ -691,7 +702,19 @@ int main() {
         createCommandBuffers();
         createSyncObjects();
 
+        double previousTime = glfwGetTime();
+        int frameCount = 0;
+     
+
         while (!glfwWindowShouldClose(window)) {
+            double currentTime = glfwGetTime();
+            frameCount++;
+            if (currentTime - previousTime >= 1.0) { // 1 second has passed
+                std::cout << "FPS: " << frameCount << std::endl;
+                frameCount = 0;
+                previousTime = currentTime;
+            }
+
             glfwPollEvents();
             drawFrame();
         }
