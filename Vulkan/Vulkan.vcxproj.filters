@@ -15,12 +15,14 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Vulkan.cpp">
+    <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\triangle.vert" />
-    <None Include="shaders\triangle.frag" />
+    <None Include="assets\shaders\triangle.vert" />
+    <None Include="assets\shaders\triangle.frag" />
+    <None Include="frag.spv" />
+    <None Include="vert.spv" />
   </ItemGroup>
 </Project>

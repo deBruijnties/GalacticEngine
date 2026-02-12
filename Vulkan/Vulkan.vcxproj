@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{f236de89-a9ba-46cb-9e66-e8025c7aa744}</ProjectGuid>
+    <ProjectGuid>{9dad09cc-0e6c-4619-8c77-724c3bcf5bc1}</ProjectGuid>
     <RootNamespace>Vulkan</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -77,10 +77,13 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.4.341.1\Include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\GLM\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>vulkan-1.lib; glfw3.lib;</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\VulkanSDK\1.4.341.1\Lib;$(ProjectDir)Dependencies\GLFW\lib;$(ProjectDir)Dependencies\Assimp\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -92,10 +95,13 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.4.341.1\Include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\GLM\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>vulkan-1.lib; glfw3.lib;</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\VulkanSDK\1.4.341.1\Lib;$(ProjectDir)Dependencies\GLFW\lib;$(ProjectDir)Dependencies\Assimp\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -105,13 +111,18 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)dependencies\glm\include;C:\VulkanSDK\1.4.341.1\Include;$(ProjectDir)dependencies\GLFW\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.4.341.1\Include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\GLM\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\VulkanSDK\1.4.341.1\Lib;$(ProjectDir)dependencies\GLFW\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;vulkan-1.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>vulkan-1.lib;glfw3.lib;opengl32.lib;user32.lib
+;gdi32.lib
+;shell32.lib;
+ole32.lib
+;winmm.lib
+;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\VulkanSDK\1.4.341.1\Lib;$(ProjectDir)Dependencies\GLFW\lib;$(ProjectDir)Dependencies\Assimp\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -123,18 +134,34 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.4.341.1\Include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\GLM\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>vulkan-1.lib;glfw3.lib;opengl32.lib;user32.lib
+;gdi32.lib
+;shell32.lib;
+ole32.lib
+;winmm.lib
+;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\VulkanSDK\1.4.341.1\Lib;$(ProjectDir)Dependencies\GLFW\lib;$(ProjectDir)Dependencies\Assimp\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Vulkan.cpp" />
+    <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\triangle.frag" />
-    <None Include="shaders\triangle.vert" />
+    <None Include="frag.spv">
+      <DeploymentContent>true</DeploymentContent>
+      <FileType>Document</FileType>
+    </None>
+    <None Include="assets\shaders\triangle.frag" />
+    <None Include="assets\shaders\triangle.vert" />
+    <None Include="vert.spv">
+      <DeploymentContent>true</DeploymentContent>
+      <FileType>Document</FileType>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

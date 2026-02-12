@@ -36,6 +36,7 @@
     <ClInclude Include="src\Core\Renderer\APIs\OpenGL\OpenGLRenderer.h" />
     <ClInclude Include="src\Core\Renderer\Backend\IRenderer.h" />
     <ClInclude Include="src\Core\Window\Window.h" />
+    <ClInclude Include="src\Core\Renderer\APIs\Vulkan\VulkanRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dependencies\GLAD\src\glad.c" />
@@ -50,6 +51,7 @@
     <ClCompile Include="src\Core\Renderer\APIs\OpenGL\OpenGLMaterial.cpp" />
     <ClCompile Include="src\Core\Renderer\APIs\OpenGL\OpenGLRenderer.cpp" />
     <ClCompile Include="src\Core\Window\Window.cpp" />
+    <ClCompile Include="src\Core\Renderer\APIs\Vulkan\VulkanRenderer.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
