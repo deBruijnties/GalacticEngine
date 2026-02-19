@@ -67,7 +67,6 @@ void Transform::OnUpdate() {UpdateMatrices(); }
 void Transform::MarkDirty()
 {
     dirty = true;
-	//std::cout << gameObject->name << " marked dirty\n";
 }
 
 

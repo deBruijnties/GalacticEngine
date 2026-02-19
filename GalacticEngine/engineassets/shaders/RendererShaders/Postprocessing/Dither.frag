@@ -8,9 +8,6 @@ void main()
 {
     vec3 color = texture(u_Src, vUV).rgb;
 
-    // Just gamma if needed
-    // color = pow(color, vec3(1.0/2.2));  // ONLY if you are in linear space
-
     // Dither
     float n = fract(sin(dot(gl_FragCoord.xy, vec2(12.9898,78.233))) * 43758.5453);
     color += (n - 0.5) / 255.0;

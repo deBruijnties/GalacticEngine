@@ -3,7 +3,7 @@
 
 namespace GalacticEngine::Core
 {
-    // --- Define static variables ---
+    // Define static variables 
     float Time::deltaTime = 0.0f;
     float Time::timeSinceStartup = 0.0f;
     float Time::timeScale = 1.0f;

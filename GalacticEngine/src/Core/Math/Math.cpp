@@ -11,7 +11,7 @@ namespace GalacticEngine::Math
     static glm::vec2 ToGLM(const Vector2& v) { return { v.x, v.y}; }
     static Vector2 FromGLM(const glm::vec2& v) { return { v.x, v.y }; }
 
-    // Conversion helpers (PRIVATE)
+    // Conversion helpers
     static glm::vec3 ToGLM(const Vector3& v) { return { v.x, v.y, v.z }; }
     static Vector3 FromGLM(const glm::vec3& v) { return { v.x, v.y, v.z }; }
 

@@ -18,9 +18,7 @@ namespace GalacticEngine::Core::Input
     bool Mouse::buttonsUp[8] = { false };
 
 
-    // -------------------------------------------------------------
     // INIT — set GLFW callbacks
-    // -------------------------------------------------------------
     void Mouse::Init(GLFWwindow* window)
     {
         glfwSetCursorPosCallback(window, CursorPosCallback);

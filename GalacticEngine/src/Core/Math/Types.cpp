@@ -8,7 +8,7 @@
 namespace GalacticEngine
 {
 
-    // --- local conversion helpers (cpp-only) ---
+    // local conversion helpers
 
     static glm::vec3 ToGLM(const Vector3& v) { return { v.x, v.y, v.z }; }
     static Vector3 FromGLM(const glm::vec3& v) { return { v.x, v.y, v.z }; }

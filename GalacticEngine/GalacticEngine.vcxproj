@@ -155,7 +155,6 @@ xcopy /y /e /i /d "$(ProjectDir)engineAssets" "$(TargetDir)engineassets\"</Comma
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Core\Scene\Components\UI\Canvas.h" />
     <ClInclude Include="src\Core\Scene\Components\ParticleSystem.h" />
     <ClInclude Include="src\Core\Debug\Profiler.h" />
     <ClInclude Include="src\Core\engine.h" />
@@ -186,7 +185,6 @@ xcopy /y /e /i /d "$(ProjectDir)engineAssets" "$(TargetDir)engineassets\"</Comma
     <ClInclude Include="src\pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Core\Scene\Components\UI\Canvas.cpp" />
     <ClCompile Include="Dependencies\GLAD\src\glad.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>

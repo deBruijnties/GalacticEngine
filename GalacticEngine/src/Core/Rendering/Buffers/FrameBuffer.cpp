@@ -34,8 +34,6 @@ static void chooseFormat(FrameBufferFormat format,
     case FrameBufferFormat::R11F_G11F_B10F:
         internalFormat = GL_R11F_G11F_B10F;
         dataFormat = GL_RGB;
-        // when uploading actual data you'd use GL_UNSIGNED_INT_10F_11F_11F_REV,
-        // but since we pass nullptr here it only matters if you ever upload data.
         dataType = GL_UNSIGNED_INT_10F_11F_11F_REV;
         break;
 

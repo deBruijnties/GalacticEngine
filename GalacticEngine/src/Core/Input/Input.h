@@ -10,7 +10,7 @@ namespace GalacticEngine::Core::Input
     class Input
     {
     public:
-        static void Init(void* nativeWindowHandle); // void* so no GLFW types leak
+        static void Init(void* nativeWindowHandle); 
         static void Update();
 
         static bool IsKeyDown(Key::Code key);

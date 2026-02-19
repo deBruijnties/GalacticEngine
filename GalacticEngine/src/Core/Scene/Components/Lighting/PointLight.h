@@ -9,7 +9,6 @@ public:
     float radius = 10;
     float intensity = 5;
 
-    void OnStart() override;
-    void OnUpdate() override;
+
     void OnSubmitRender() override;
 };
