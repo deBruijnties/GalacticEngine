@@ -23,6 +23,8 @@
 Camera* Renderer::s_currentCamera = nullptr;
 Camera* Renderer::s_currentRenderingCamera = nullptr;
 
+Canvas* Renderer::s_Canvas = nullptr;
+
 Shader* ditherShader;
 
 std::vector<Renderer::RenderCommand> Renderer::s_OpaqueQueue;
@@ -193,7 +195,6 @@ void Renderer::EndCamera()
 
 
 
-    UIPass();
 
 
 
@@ -231,6 +232,12 @@ void Renderer::EndCamera()
     ditherShader->setInt("u_HDR", 0);
 
     FullscreenQuad::Get().Draw();
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0); // render directly to screen
+    glViewport(0, 0, Engine::width, Engine::height);
+    UIPass();
+
+
 }
 
 
@@ -401,7 +408,19 @@ void Renderer::SkyboxPass()
 
 void Renderer::UIPass()
 {
-  
+    if (!s_Canvas)
+        return;
+
+    // Optionally: setup orthographic projection for UI
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    // Render all UI elements
+    s_Canvas->Render();
+
+    glDisable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
 }
 
 

@@ -73,6 +73,7 @@ namespace GalacticEngine::Core
 
         width = Width;
         height = Height;
+
         currentScene->resize(width, height);
     }
 

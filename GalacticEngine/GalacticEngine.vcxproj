@@ -155,6 +155,7 @@ xcopy /y /e /i /d "$(ProjectDir)engineAssets" "$(TargetDir)engineassets\"</Comma
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Core\UI\Canvas.h" />
     <ClInclude Include="src\Core\Scene\Components\ParticleSystem.h" />
     <ClInclude Include="src\Core\Debug\Profiler.h" />
     <ClInclude Include="src\Core\engine.h" />
@@ -183,8 +184,12 @@ xcopy /y /e /i /d "$(ProjectDir)engineAssets" "$(TargetDir)engineassets\"</Comma
     <ClInclude Include="src\Core\Time.h" />
     <ClInclude Include="src\Core\Utils\printmat4.h" />
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\Core\UI\UIElement.h" />
+    <ClInclude Include="src\Core\UI\TextElement.h" />
+    <ClInclude Include="src\Core\UI\TextureElement.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Core\UI\Canvas.cpp" />
     <ClCompile Include="Dependencies\GLAD\src\glad.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
@@ -218,6 +223,9 @@ xcopy /y /e /i /d "$(ProjectDir)engineAssets" "$(TargetDir)engineassets\"</Comma
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\Core\UI\UIElement.cpp" />
+    <ClCompile Include="src\Core\UI\TextElement.cpp" />
+    <ClCompile Include="src\Core\UI\TextureElement.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

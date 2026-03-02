@@ -1,5 +1,5 @@
 #pragma once
-
+#include "core/UI/Canvas.h"
 #include <vector>
 #include "Buffers/gbuffer.h"
 
@@ -55,7 +55,11 @@ public:
     static void SetCamera(Camera* camera);
     static Camera* GetCamera();
 
+    static void SetCanvas(Canvas* canvas) { s_Canvas = canvas; }
+
 private:
+    static Canvas* s_Canvas; // <-- store the UI Canvas
+    
     static void DefferedOpaquePass();
     static void DefferedLightingPass();
     static void ForwardUnlitPass();
