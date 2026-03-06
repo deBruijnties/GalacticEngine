@@ -13,6 +13,7 @@ namespace GalacticEngine::Core::Input
         static void Init(void* nativeWindowHandle); 
         static void Update();
 
+        static bool IsAnyKeyPressed();
         static bool IsKeyDown(Key::Code key);
         static bool IsKeyPressed(Key::Code key);
         static bool IsKeyReleased(Key::Code key);

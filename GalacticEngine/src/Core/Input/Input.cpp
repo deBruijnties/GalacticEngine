@@ -106,6 +106,17 @@ namespace GalacticEngine::Core::Input
             });
     }
 
+    // Returns true if any key was pressed this frame
+    bool Input::IsAnyKeyPressed()
+    {
+        for (int i = 0; i < (int)Key::Count; i++)
+        {
+            if (s_CurrentKeys[i] && !s_PreviousKeys[i])
+                return true;
+        }
+        return false;
+    }
+
     void Input::Update()
     {
         std::memcpy(s_PreviousKeys, s_CurrentKeys, sizeof(s_CurrentKeys));

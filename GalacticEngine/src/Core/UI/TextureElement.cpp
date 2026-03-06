@@ -17,8 +17,6 @@ void TextureElement::Render()
     if (!texture || !material)
         return;
 
-    std::cout << "Render TextureElement\n";
-
     // Get texture size
     float texWidth = (float)texture->Width;
     float texHeight = (float)texture->Height;
