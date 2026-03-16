@@ -6,6 +6,7 @@ namespace GalacticEngine::Core
 {
     int Engine::width = 0;
     int Engine::height = 0;
+    bool Engine::Running = true;
 
     GLFWwindow* Engine::window = nullptr;
     Scene* Engine::currentScene = nullptr;
@@ -102,7 +103,7 @@ namespace GalacticEngine::Core
 
         double lastTime = glfwGetTime();
 
-        while (window && !glfwWindowShouldClose(window))
+        while ( Running && window && !glfwWindowShouldClose(window))
         {
             PROFILE_SCOPE("Frame");
             Profiler::Get().BeginFrame();
