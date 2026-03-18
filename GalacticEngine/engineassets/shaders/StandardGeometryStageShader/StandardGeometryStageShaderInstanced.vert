@@ -29,16 +29,16 @@ void main()
     // Normal matrix
     mat3 normalMat = mat3(transpose(inverse(u_Model)));
 
-    vLocalNormal = aNormal;   // <<< THIS WAS MISSING
+    vLocalNormal = aNormal;
 
     // World-space normal
+    // Shi to calc tangens etc forgot what it does :(
     vec3 N = normalize(normalMat * aNormal);
 
-    vec3 T = normalMat * aTangent;    // do NOT normalize yet
+    vec3 T = normalMat * aTangent;
 
     if (length(T) < 0.0001)
     {
-        // Build a fallback tangent from the normal
         vec3 up = abs(N.y) < 0.999 ? vec3(0,1,0) : vec3(1,0,0);
         T = normalize(cross(up, N));
     }
@@ -47,15 +47,12 @@ void main()
         T = normalize(T);
     }
 
-    // Orthonormalize tangent against normal
     T = normalize(T - dot(T, N) * N);
 
     vec3 B = cross(N, T);
 
-    // --- FIX 3: WRITE WORLD NORMAL (you already fixed this) ---
     vWorldNormal = N;
 
-    // TBN matrix for normal mapping (even if not used yet)
     vTBN = mat3(T, B, N);
 
     gl_Position = u_Projection * u_View * world;

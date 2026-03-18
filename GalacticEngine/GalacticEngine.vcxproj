@@ -225,6 +225,10 @@ xcopy /y /e /i /d "$(ProjectDir)engineAssets" "$(TargetDir)engineassets\"</Comma
     <ClCompile Include="src\Core\UI\UIElement.cpp" />
     <ClCompile Include="src\Core\UI\TextureElement.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="engineassets\shaders\UI\TextureShader\TextureShader.frag" />
+    <None Include="engineassets\shaders\UI\TextureShader\TextureShader.vert" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

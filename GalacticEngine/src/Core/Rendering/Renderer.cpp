@@ -12,20 +12,17 @@
 #include "Buffers/gbuffer.h"
 #include <Core/engine.h>
 
-#include <core/Rendering/Buffers/framebuffer.h>
 #include <core/Scene/Gameobject.h>
 #include <Core/Debug/Profiler.h>
 #include <Core/Time.h>
 #include <Core/Utils/printmat4.h>
 
-//#define debugRenderingFence
 
 Camera* Renderer::s_currentCamera = nullptr;
 Camera* Renderer::s_currentRenderingCamera = nullptr;
 
 Canvas* Renderer::s_Canvas = nullptr;
 
-Shader* ditherShader;
 
 std::vector<Renderer::RenderCommand> Renderer::s_OpaqueQueue;
 std::vector<Renderer::RenderCommand> Renderer::s_OpaqueUnlitQueue;
@@ -42,10 +39,68 @@ StructuredBuffer* Renderer::s_PointLightBuffer = nullptr;
 uint32_t Renderer::s_PointLightCount = 0;
 
 Shader* Renderer::deferredLightingShader = nullptr;
+Shader* ditherShader;
+Shader* bloomExtractShader;
+Shader* bloomCombineShader;
+Shader* bloomBlurShader;
+
+// Bloom framebuffers:
+static FrameBuffer* s_BloomBuffers[3] = { nullptr, nullptr, nullptr };
+static FrameBuffer* s_BloomCombineOutput = nullptr; // full-res combine target
+static int s_BloomWidth = 0;
+static int s_BloomHeight = 0;
+
+// Number of blur iterations (each iteration = 1 horizontal + 1 vertical pass)
+static constexpr int BLOOM_BLUR_PASSES = 5;
+
+// Threshold above which a pixel is considered "bright enough" to bloom
+static constexpr float BLOOM_THRESHOLD = 1.0f;
+
+// How strongly the bloom result is added back onto the scene
+static constexpr float BLOOM_INTENSITY = 0.6f;
+
+
+// Helpers
+
+static void EnsureBloomBuffers(int sceneWidth, int sceneHeight)
+{
+    // Use half resolution for bloom – cheaper and looks fine after blurring
+    int bw = sceneWidth / 2;
+    int bh = sceneHeight / 2 ;
+
+    if (bw == s_BloomWidth && bh == s_BloomHeight)
+        return; // already the right size
+
+    // Delete old buffers if they exist
+    for (int i = 0; i < 3; ++i)
+    {
+        delete s_BloomBuffers[i];
+        s_BloomBuffers[i] = nullptr;
+    }
+    delete s_BloomCombineOutput;
+    s_BloomCombineOutput = nullptr;
+
+    // Half-res: extract + blur ping-pong (no depth needed for post-process)
+    for (int i = 0; i < 3; ++i)
+    {
+        s_BloomBuffers[i] = new FrameBuffer;
+        s_BloomBuffers[i]->init(bw, bh,FrameBufferFormat::RGBA16F);
+    }
+
+
+    s_BloomCombineOutput = new FrameBuffer;
+    s_BloomCombineOutput->init(sceneWidth, sceneHeight, FrameBufferFormat::RGBA16F);
+
+    s_BloomWidth = bw;
+    s_BloomHeight = bh;
+}
+
+
+// Init / Shutdown
 
 void Renderer::Init(int width, int height)
 {
-	// setup point light buffer
+    // Setup point light buffer
     s_PointLightBuffer = new StructuredBuffer(
         1, // binding = 1
         sizeof(GPUPointLight)
@@ -60,16 +115,36 @@ void Renderer::Init(int width, int height)
         "engineassets/shaders/RendererShaders/Postprocessing/Dither.frag",
         true
     );
-    
 
-    constexpr size_t MAX_POINT_LIGHTS = 256;
+    // Bloom shaders
+    bloomExtractShader = new Shader(
+        "engineassets/shaders/Bloom/Extract.vert",
+        "engineassets/shaders/Bloom/Extract.frag",
+        true
+    );
+    bloomCombineShader = new Shader(
+        "engineassets/shaders/Bloom/Combine.vert",
+        "engineassets/shaders/Bloom/Combine.frag",
+        true
+    );
+    bloomBlurShader = new Shader(
+        "engineassets/shaders/Bloom/Blur.vert",
+        "engineassets/shaders/Bloom/Blur.frag",
+        true
+    );
+
+    constexpr size_t MAX_POINT_LIGHTS = 20;
     s_PointLightBuffer->Allocate(MAX_POINT_LIGHTS);
+
+    // Pre-allocate bloom buffers at the initial resolution
+    EnsureBloomBuffers(width, height);
 }
 
 
+// Scene begin / end
+
 void Renderer::BeginScene()
 {
-   
     s_PointLightCount = 0;
 
     s_OpaqueQueue.clear();
@@ -86,8 +161,6 @@ void Renderer::BeginScene()
 
 void Renderer::EndScene()
 {
-
-    // Cleanup
     s_PointLightCount = 0;
 
     s_OpaqueQueue.clear();
@@ -101,9 +174,12 @@ void Renderer::EndScene()
     s_ShadowInstancedQueue.clear();
 }
 
-void Renderer::SetCamera( Camera* camera)
+
+// Camera helpers
+
+void Renderer::SetCamera(Camera* camera)
 {
-	s_currentCamera = camera;
+    s_currentCamera = camera;
 }
 
 Camera* Renderer::GetCamera()
@@ -122,7 +198,6 @@ void Renderer::BeginCamera(const Camera& camera)
     const Matrix4 viewProj = proj * view;
     const Matrix4 invViewProj = Math::Inverse(viewProj);
 
-	// set global uniforms camera data
     Material::SetGlobalMat4("u_View", view);
     Material::SetGlobalMat4("u_Projection", proj);
     Material::SetGlobalMat4("u_ViewProjection", viewProj);
@@ -130,25 +205,23 @@ void Renderer::BeginCamera(const Camera& camera)
     Material::SetGlobalVec3("u_CameraPos", camera.transform->worldPosition);
     Material::SetGlobalInt("u_PointLightCount", s_PointLightCount);
     Material::SetGlobalFloat("u_Time", Time::timeSinceStartup);
-
 }
 
 
-
+// EndCamera  –  full post-process chain including bloom
 
 void Renderer::EndCamera()
 {
     // GEOMETRY PASS (GBUFFER)
     {
         glEnable(GL_CULL_FACE);
-
         PROFILE_SCOPE("Deferred Opaque Pass");
         DefferedOpaquePass();
     }
 
-    // SET CAMERA OUTPUT
+    // Bind camera's internal HDR framebuffer and blit depth from gbuffer
     {
-        PROFILE_SCOPE("Bind Camera Framebufffer and blit depth");
+        PROFILE_SCOPE("Bind Camera Framebuffer and blit depth");
 
         s_currentRenderingCamera->BindInternal();
 
@@ -164,14 +237,16 @@ void Renderer::EndCamera()
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, s_currentRenderingCamera->GetInternalOutput()->fbo);
 
         glBlitFramebuffer(
-            0, 0, s_currentRenderingCamera->GetResolution().x, s_currentRenderingCamera->GetResolution().y,
-            0, 0, s_currentRenderingCamera->GetResolution().x, s_currentRenderingCamera->GetResolution().y,
+            0, 0,
+            s_currentRenderingCamera->GetResolution().x,
+            s_currentRenderingCamera->GetResolution().y,
+            0, 0,
+            s_currentRenderingCamera->GetResolution().x,
+            s_currentRenderingCamera->GetResolution().y,
             GL_DEPTH_BUFFER_BIT,
             GL_NEAREST
         );
-
     }
-
 
     // LIGHTING PASS
     {
@@ -190,64 +265,134 @@ void Renderer::EndCamera()
         PROFILE_SCOPE("Forward Transparent Pass");
         ForwardTransparentPass();
     }
-    
 
-
-
-
-
-
-
-
-
-
-    // FINAL Copy + DITHER PASS
-
-    int w, h;
-    if (s_currentRenderingCamera->GetOutput())
     {
-        FrameBuffer* out = s_currentRenderingCamera->GetOutput();
-        glBindFramebuffer(GL_FRAMEBUFFER, out->fbo);
-        w = out->width;
-        h = out->height;
+        PROFILE_SCOPE("Bloom Pass");
+
+        const int resX = s_currentRenderingCamera->GetResolution().x;
+        const int resY = s_currentRenderingCamera->GetResolution().y;
+
+        // Resize bloom buffers if the camera resolution changed
+        EnsureBloomBuffers(resX, resY);
+
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_BLEND);
+
+        // EXTRACT 
+        glBindFramebuffer(GL_FRAMEBUFFER, s_BloomBuffers[0]->fbo);
+        glViewport(0, 0, s_BloomWidth, s_BloomHeight);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        bloomExtractShader->bind();
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D,
+            s_currentRenderingCamera->GetInternalOutput()->colorTex);
+        bloomExtractShader->setInt("hdrColor", 0);
+        bloomExtractShader->setFloat("threshold", BLOOM_THRESHOLD);
+
+        FullscreenQuad::Get().Draw();
+
+        // PING-PONG BLUR
+
+        bool horizontal = true;
+        bool firstIteration = true;
+
+        for (int i = 0; i < BLOOM_BLUR_PASSES * 2; ++i)
+        {
+            int dst = horizontal ? 1 : 2;
+            glBindFramebuffer(GL_FRAMEBUFFER, s_BloomBuffers[dst]->fbo);
+            glViewport(0, 0, s_BloomWidth, s_BloomHeight);
+            glClear(GL_COLOR_BUFFER_BIT);
+
+            bloomBlurShader->bind();
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D,
+                firstIteration
+                ? s_BloomBuffers[0]->colorTex
+                : s_BloomBuffers[horizontal ? 2 : 1]->colorTex);
+
+            bloomBlurShader->setInt("image", 0);
+            bloomBlurShader->setBool("horizontal", horizontal);
+
+            FullscreenQuad::Get().Draw();
+
+            horizontal = !horizontal;
+            firstIteration = false;
+        }
+
+        constexpr int BLUR_RESULT_INDEX = (BLOOM_BLUR_PASSES % 2 == 1) ? 1 : 2;
+
+        // COMBINE
+        
+        glBindFramebuffer(GL_FRAMEBUFFER, s_BloomCombineOutput->fbo);
+        glViewport(0, 0, resX, resY);
+        glDisable(GL_BLEND); // shader does the add itself; no GL blending needed
+
+        bloomCombineShader->bind();
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D,
+            s_currentRenderingCamera->GetInternalOutput()->colorTex); // scene
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D,
+            s_BloomBuffers[BLUR_RESULT_INDEX]->colorTex);             // blurred bloom
+
+        bloomCombineShader->setInt("scene", 0);
+        bloomCombineShader->setInt("bloomBlur", 1);
+        bloomCombineShader->setFloat("bloomIntensity", BLOOM_INTENSITY);
+
+        FullscreenQuad::Get().Draw();
+
+        glEnable(GL_DEPTH_TEST);
     }
-    else
+
+    // 7. FINAL COPY + DITHER PASS TO output framebuffer (or screen)
     {
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        w = Engine::width;
-        h = Engine::height;
+        PROFILE_SCOPE("Dither / Output Pass");
+
+        int w, h;
+        if (s_currentRenderingCamera->GetOutput())
+        {
+            FrameBuffer* out = s_currentRenderingCamera->GetOutput();
+            glBindFramebuffer(GL_FRAMEBUFFER, out->fbo);
+            w = out->width;
+            h = out->height;
+        }
+        else
+        {
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            w = Engine::width;
+            h = Engine::height;
+        }
+
+        glViewport(0, 0, w, h);
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_BLEND);
+
+        glClearColor(0, 0, 0, 1);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        ditherShader->bind();
+        glActiveTexture(GL_TEXTURE0);
+        // Read from the combine output (scene + bloom), NOT the raw internal
+        // HDR — that buffer no longer has bloom added into it.
+        glBindTexture(GL_TEXTURE_2D, s_BloomCombineOutput->colorTex);
+        ditherShader->setInt("u_HDR", 0);
+
+        FullscreenQuad::Get().Draw();
     }
 
-    glViewport(0, 0, w, h);
-
-    // Clear
-    glClearColor(0, 0, 0, 1);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    // Draw
-    ditherShader->bind();
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, s_currentRenderingCamera->GetInternalOutput()->colorTex);
-    //glBindTexture(GL_TEXTURE_2D, s_currentRenderingCamera->gbuffer.GetNormalRoughTex());//TEMP TEMP TEMP
-    ditherShader->setInt("u_HDR", 0);
-
-    FullscreenQuad::Get().Draw();
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0); // render directly to screen
+    // 8. UI PASS  (always rendered to screen / final output)
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, Engine::width, Engine::height);
     UIPass();
-
-
 }
 
 
-// Passes
+// Render Passes
 void Renderer::DefferedOpaquePass()
 {
-
-    // Bind gbuffers
     s_currentRenderingCamera->gbuffer.Bind();
-    s_currentRenderingCamera->gbuffer.ClearBuffers(); //clears gbuffers to standard values ALSO BINDS
+    s_currentRenderingCamera->gbuffer.ClearBuffers();
 
     for (const RenderCommand& cmd : s_OpaqueQueue)
     {
@@ -255,21 +400,16 @@ void Renderer::DefferedOpaquePass()
         cmd.material->Bind();
         cmd.mesh->Bind();
         cmd.mesh->Draw();
-        //draw to gbuffers
     }
 
     for (const InstancedRenderCommand& cmd : s_InstancedOpaqueQueue)
     {
         cmd.material->Bind();
-
         cmd.instanceBuffer->Bind();
         cmd.mesh->Bind();
         cmd.mesh->DrawInstanced(
-            static_cast<GLsizei>(
-                cmd.instanceBuffer->GetActiveCount()
-                )
+            static_cast<GLsizei>(cmd.instanceBuffer->GetActiveCount())
         );
-        //also draw to gbuffers
     }
 
     s_currentRenderingCamera->gbuffer.Unbind();
@@ -277,15 +417,10 @@ void Renderer::DefferedOpaquePass()
 
 void Renderer::DefferedLightingPass()
 {
-
     glDisable(GL_DEPTH_TEST);
 
-	// send point light data to GPU
     s_PointLightBuffer->Upload();
     s_PointLightBuffer->Bind(); // binding = 1
-
-    // Draw fullscreen lighting pass
-    //glDisable(GL_DEPTH_TEST);
 
     deferredLightingShader->bind();
     s_currentRenderingCamera->gbuffer.BindAlbedoMetalTex(0);
@@ -293,20 +428,18 @@ void Renderer::DefferedLightingPass()
     s_currentRenderingCamera->gbuffer.BindEmissionAOTex(2);
     s_currentRenderingCamera->gbuffer.BindDepthTex(3);
 
-
     const Matrix4 view = Material::mat4GlobalUniforms["u_View"];
     const Matrix4 proj = Material::mat4GlobalUniforms["u_Projection"];
     const Matrix4 viewProj = proj * view;
     const Matrix4 invViewProj = Math::Inverse(viewProj);
 
-
-    // set global uniforms camera data
     deferredLightingShader->setInt("u_PointLightCount", s_PointLightCount);
     deferredLightingShader->setMatrix4x4("u_View", view);
     deferredLightingShader->setMatrix4x4("u_Projection", proj);
     deferredLightingShader->setMatrix4x4("u_ViewProjection", viewProj);
     deferredLightingShader->setMatrix4x4("u_InverseViewProjection", invViewProj);
-    deferredLightingShader->setVector3("u_CameraPos", Material::vec3GlobalUniforms["u_CameraPos"]);
+    deferredLightingShader->setVector3("u_CameraPos",
+        Material::vec3GlobalUniforms["u_CameraPos"]);
 
     deferredLightingShader->setInt("gAlbedoMetal", 0);
     deferredLightingShader->setInt("gNormalRough", 1);
@@ -316,20 +449,13 @@ void Renderer::DefferedLightingPass()
     FullscreenQuad::Get().Draw();
 
     glEnable(GL_DEPTH_TEST);
-
 }
 
 void Renderer::ForwardUnlitPass()
 {
-    
-    // Opaque unlit forward pass
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
-
     glDisable(GL_BLEND);
-    
-    // No lighting needed, but some unlit shaders might still
-    // read camera globals (View/Projection), which are already set
 
     for (const RenderCommand& cmd : s_OpaqueUnlitQueue)
     {
@@ -337,15 +463,10 @@ void Renderer::ForwardUnlitPass()
         cmd.material->Bind();
         cmd.mesh->Bind();
         cmd.mesh->Draw();
-        
-
-
-
     }
     for (const InstancedRenderCommand& cmd : s_InstancedOpaqueUnlitQueue)
     {
         cmd.material->Bind();
-
         cmd.instanceBuffer->Bind();
         cmd.mesh->Bind();
         cmd.mesh->DrawInstanced(
@@ -354,19 +475,15 @@ void Renderer::ForwardUnlitPass()
     }
 }
 
-
 void Renderer::ForwardTransparentPass()
 {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
     glDepthMask(GL_FALSE);
     glEnable(GL_DEPTH_TEST);
 
-
     s_PointLightBuffer->Bind(); // binding = 1
 
-    // Transparent
     std::sort(
         s_TransparentQueue.begin(),
         s_TransparentQueue.end(),
@@ -380,7 +497,6 @@ void Renderer::ForwardTransparentPass()
     {
         cmd.material->Bind();
         cmd.material->SetMat4("u_Model", cmd.transform);
-
         cmd.mesh->Bind();
         cmd.mesh->Draw();
     }
@@ -388,15 +504,13 @@ void Renderer::ForwardTransparentPass()
     for (const InstancedRenderCommand& cmd : s_InstancedTransparentQueue)
     {
         cmd.material->Bind();
-
         cmd.instanceBuffer->Bind();
         cmd.mesh->Bind();
         cmd.mesh->DrawInstanced(
-            static_cast<GLsizei>(
-                cmd.instanceBuffer->GetActiveCount()
-                )
+            static_cast<GLsizei>(cmd.instanceBuffer->GetActiveCount())
         );
     }
+
     glDepthMask(GL_TRUE);
     glDisable(GL_BLEND);
 }
@@ -411,12 +525,10 @@ void Renderer::UIPass()
     if (!s_Canvas)
         return;
 
-    // Optionally: setup orthographic projection for UI
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    // Render all UI elements
     s_Canvas->Render();
 
     glDisable(GL_BLEND);
@@ -424,20 +536,16 @@ void Renderer::UIPass()
 }
 
 
-
-
 // Submission
 
 void Renderer::Submit(RenderCommand& cmd)
 {
-    // camera-space depth
     if (!s_currentCamera)
         return;
-    const Vector3 cameraPos = s_currentCamera->transform->worldPosition;
 
     if (cmd.material->isTransparent)
         s_TransparentQueue.push_back(cmd);
-    else if(cmd.material->isLit)
+    else if (cmd.material->isLit)
         s_OpaqueQueue.push_back(cmd);
     else
         s_OpaqueUnlitQueue.push_back(cmd);
@@ -455,19 +563,15 @@ void Renderer::SubmitInstanced(InstancedRenderCommand& cmd)
     else
         s_InstancedOpaqueUnlitQueue.push_back(cmd);
 
-
     if (cmd.CastsShadow)
         s_ShadowInstancedQueue.push_back(cmd);
 }
 
-void Renderer::SubmitPointLight(const Vector3& pos, float radius, const Vector3& color, float intensity)
+void Renderer::SubmitPointLight(const Vector3& pos, float radius,
+    const Vector3& color, float intensity)
 {
     GPUPointLight light;
     light.position = Vector4(pos.x, pos.y, pos.z, radius);
     light.color = Vector4(color.x, color.y, color.z, intensity);
-    
     s_PointLightBuffer->Set(s_PointLightCount++, light);
 }
-
-
-

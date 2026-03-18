@@ -195,4 +195,8 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="engineassets\shaders\UI\TextureShader\TextureShader.vert" />
+    <None Include="engineassets\shaders\UI\TextureShader\TextureShader.frag" />
+  </ItemGroup>
 </Project>
