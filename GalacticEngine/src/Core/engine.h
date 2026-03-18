@@ -20,7 +20,7 @@ namespace GalacticEngine::Core
         static Scene* getCurrentScene();
         static void setCurrentScene(Scene* scene);
 
-        static bool Running ;
+        static bool Running;
         static int width;
         static int height;
 

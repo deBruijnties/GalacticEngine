@@ -6,8 +6,8 @@ Material* TextureElement::material = nullptr;
 void TextureElement::Init()
 {
     material = new Material(new Shader(
-        "assets/shaders/UI/TextureShader/TextureShader.vert",
-        "assets/shaders/UI/TextureShader/TextureShader.frag",
+        "engineassets/shaders/UI/TextureShader/TextureShader.vert",
+        "engineassets/shaders/UI/TextureShader/TextureShader.frag",
         true
     ));
 }

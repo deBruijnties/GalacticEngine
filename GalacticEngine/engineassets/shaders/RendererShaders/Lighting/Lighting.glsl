@@ -61,7 +61,7 @@ vec3 ComputePointLights(
         vec3 lightColor = lights[i].color.rgb * lights[i].color.a;
         vec3 radiance = lightColor * attenuation;
 
-        // ----- GGX Specular -----
+        // GGX Specular
         float a  = roughness * roughness;
         float a2 = a * a;
 
@@ -77,7 +77,7 @@ vec3 ComputePointLights(
 
         vec3 specular = (D * G * F) / max(4.0 * NdotV * NdotL, 0.001);
 
-        // ----- Diffuse (energy conserving) -----
+        // Diffuse (energy conserving)
         vec3 kd = (1.0 - F) * (1.0 - metallic);
         vec3 diffuse = kd * albedo / PI;
 
