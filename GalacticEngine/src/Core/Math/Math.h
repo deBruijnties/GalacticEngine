@@ -17,6 +17,8 @@ namespace GalacticEngine::Math
     float Radians(float v);
     float Lerp(float a, float b, float t);
     float Clamp(float v, float a, float b);
+    float Degrees(float v);
+
 
     //Vector2 operations
     float Dot(const Vector2& a, const Vector2& b);

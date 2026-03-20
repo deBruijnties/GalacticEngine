@@ -94,6 +94,11 @@ namespace GalacticEngine::Math
         return glm::dot(ToGLM(a), ToGLM(b));
     }
 
+    float Degrees(float v)
+    {
+        return glm::degrees(v);
+    }
+
     Vector2 Lerp(const Vector2& a, const Vector2& b, float t)
     {
         return FromGLM(glm::mix(ToGLM(a), ToGLM(b), t));
