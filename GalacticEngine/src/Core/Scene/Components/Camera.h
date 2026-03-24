@@ -15,9 +15,9 @@ public:
     void OnResize(int width, int height) override;
 
     // Matrices
-    const Matrix4& GetViewMatrix() const;
+    const Matrix4 GetViewMatrix() const;
     const Matrix4& GetProjectionMatrix() const;
-    const Matrix4& GetViewProjectionMatrix() const;
+    const Matrix4 GetViewProjectionMatrix() const;
 
     void BindInternal();
 

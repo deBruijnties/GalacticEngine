@@ -28,7 +28,7 @@ void Camera::OnResize(int width, int height)
     }
 }
 
-const Matrix4& Camera::GetViewMatrix() const
+const Matrix4 Camera::GetViewMatrix() const
 {
     return Math::Inverse(transform->worldMatrix);
 }
@@ -38,7 +38,7 @@ const Matrix4& Camera::GetProjectionMatrix() const
     return projection;
 }
 
-const Matrix4& Camera::GetViewProjectionMatrix() const
+const Matrix4 Camera::GetViewProjectionMatrix() const
 {
     return projection * Math::Inverse(transform->worldMatrix);
 }

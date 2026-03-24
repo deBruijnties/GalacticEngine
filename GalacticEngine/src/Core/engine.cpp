@@ -112,7 +112,7 @@ namespace GalacticEngine::Core
             double dt = currentTime - lastTime;
             lastTime = currentTime;
 
-            Time::Update(dt);
+            Time::Update((float)dt);
             Input::Input::Update();
             {
                 PROFILE_SCOPE("input");
