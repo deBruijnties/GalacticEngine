@@ -17,6 +17,8 @@ namespace GalacticEngine::Core
 
         void Run();
 
+        static void SetTitle(const char* title);
+
         static Scene* getCurrentScene();
         static void setCurrentScene(Scene* scene);
 

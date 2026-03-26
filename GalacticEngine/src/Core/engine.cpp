@@ -166,6 +166,11 @@ namespace GalacticEngine::Core
         glfwTerminate();
     }
 
+    void Engine::SetTitle(const char* title)
+    {
+        glfwSetWindowTitle(window, title);
+    }
+
     void Engine::FramebufferSizeCallback(GLFWwindow* window, int width, int height)
     {
         Engine* engine = static_cast<Engine*>(glfwGetWindowUserPointer(window));
