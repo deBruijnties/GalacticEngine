@@ -1,15 +1,16 @@
-﻿#include <pch.h>
+#include <pch.h>
 #include "Shader.h"
 #include <iostream>
 #include <glm/gtc/type_ptr.hpp>
 
+// shared across all shaders - engine sets these up once at startup (e.g. "engineassets/shaders/")
 std::vector<std::string> Shader::s_IncludeDirectories;
 
 
 Shader::Shader(const char* vertexCode, const char* fragmentCode, bool LoadFromFile)
 {
     std::cout << "Loaded Shader " << fragmentCode << '\n';
-    // Keep strings alive for the lifetime of this constructor
+
     std::string vertexSource;
     std::string fragmentSource;
 
@@ -18,6 +19,7 @@ Shader::Shader(const char* vertexCode, const char* fragmentCode, bool LoadFromFi
 
     if (LoadFromFile)
     {
+        // preprocessIncludes recurses through #include directives and stitches the files together
         vertexSource = preprocessIncludes(
             loadFileToString(vertexCode),
             getDirectory(vertexCode)
@@ -28,30 +30,28 @@ Shader::Shader(const char* vertexCode, const char* fragmentCode, bool LoadFromFi
             getDirectory(fragmentCode)
         );
 
-
         if (vertexSource.empty() || fragmentSource.empty()) {
             std::cerr << "ERROR::SHADER::FAILED_TO_LOAD_SHADER_FILES\n";
             ID = 0;
             return;
         }
 
-        // Use c_str() from strings that are still in scope
+        // important: point at the std::strings above, not the original char* args
+        // the strings need to stay in scope until glShaderSource is done with them
         vShaderCode = vertexSource.c_str();
         fShaderCode = fragmentSource.c_str();
     }
 
-    // 2. Compile shaders
     GLuint vertex = compileShader(vShaderCode, GL_VERTEX_SHADER);
     GLuint fragment = compileShader(fShaderCode, GL_FRAGMENT_SHADER);
 
-    // 3. Shader Program
     ID = glCreateProgram();
     glAttachShader(ID, vertex);
     glAttachShader(ID, fragment);
     glLinkProgram(ID);
     checkCompileErrors(ID, "PROGRAM");
 
-    // 4. Delete the shaders
+    // once linked into the program the individual shader objects are no longer needed
     glDeleteShader(vertex);
     glDeleteShader(fragment);
 }
@@ -60,6 +60,9 @@ void Shader::bind() const
 {
     glUseProgram(ID);
 }
+
+// uniform setters all follow the same pattern: cache lookup -> set if found
+// silently ignores uniforms that don't exist (loc < 0) so unused uniforms don't spam errors
 
 void Shader::setBool(const std::string& name, bool value) const
 {
@@ -86,24 +89,15 @@ void Shader::setVector3(const std::string& name, const Vector3& value) const
 {
     int loc = GetUniformLocation(name);
     if (loc >= 0)
-        glUniform3f(
-            static_cast<GLint>(loc),
-            value.x, value.y, value.z
-        );
+        glUniform3f(static_cast<GLint>(loc), value.x, value.y, value.z);
 }
 
 void Shader::setMatrix4x4(const std::string& name, const Matrix4& matrix) const
 {
     int loc = GetUniformLocation(name);
     if (loc >= 0)
-        glUniformMatrix4fv(
-            static_cast<GLint>(loc),
-            1,
-            GL_FALSE,
-            matrix.m
-        );
+        glUniformMatrix4fv(static_cast<GLint>(loc), 1, GL_FALSE, matrix.m);
 }
-
 
 
 void Shader::AddIncludeDirectory(const std::string& path)
@@ -113,7 +107,7 @@ void Shader::AddIncludeDirectory(const std::string& path)
 
     std::string normalized = path;
 
-    // Ensure trailing slash
+    // ensure trailing slash so we can blindly concatenate filenames onto it
     if (normalized.back() != '/' && normalized.back() != '\\')
         normalized += '/';
 
@@ -123,7 +117,7 @@ void Shader::AddIncludeDirectory(const std::string& path)
 
 std::string Shader::loadFileToString(const std::string& path)
 {
-    std::ifstream file(path, std::ios::binary);
+    std::ifstream file(path, std::ios::binary); // binary mode so we don't mangle line endings
     if (!file.is_open()) {
         std::cerr << "ERROR::SHADER::FILE_NOT_FOUND: " << path << "\n";
         return "";
@@ -133,7 +127,7 @@ std::string Shader::loadFileToString(const std::string& path)
     buffer << file.rdbuf();
     std::string data = buffer.str();
 
-    // Remove UTF-8 BOM if present (EF BB BF)
+    // some editors (especially on Windows) save with a UTF-8 BOM - strip it or the GLSL compiler chokes
     if (data.size() >= 3 &&
         (unsigned char)data[0] == 0xEF &&
         (unsigned char)data[1] == 0xBB &&
@@ -145,22 +139,25 @@ std::string Shader::loadFileToString(const std::string& path)
     return data;
 }
 
+// caches uniform locations so we're not calling glGetUniformLocation every frame
+// first call is slow, everything after is just a map lookup
 int Shader::GetUniformLocation(const std::string& name) const
 {
     auto it = uniformCache.find(name);
     if (it != uniformCache.end())
         return it->second;
+
     GLint loc = glGetUniformLocation(ID, name.c_str());
-    uniformCache[name] = static_cast<int>(loc);
+    uniformCache[name] = static_cast<int>(loc); // -1 if not found, that's fine
     return uniformCache[name];
 }
 
 
-
-std::string Shader::preprocessIncludes(
-    const std::string& source,
-    const std::string& parentPath
-)
+// walks through the source line by line and replaces #include directives with actual file contents
+// handles both relative includes ("file.glsl") and system-style includes (<file.glsl>)
+// relative includes are resolved from the including file's directory first,
+// then falls back to the registered include directories
+std::string Shader::preprocessIncludes(const std::string& source, const std::string& parentPath)
 {
     std::stringstream output;
     std::istringstream input(source);
@@ -196,17 +193,15 @@ std::string Shader::preprocessIncludes(
             std::string fullPath;
             bool found = false;
 
-            // relative to current file
+            // try relative to the file that contains this #include
             if (!isSystemInclude)
             {
                 fullPath = parentPath + includeFile;
                 if (std::ifstream(fullPath).good())
-                {
                     found = true;
-                }
             }
 
-            // search include directories
+            // fall back to the global include directories (e.g. engine shader library)
             if (!found)
             {
                 for (const auto& dir : s_IncludeDirectories)
@@ -223,17 +218,12 @@ std::string Shader::preprocessIncludes(
 
             if (!found)
             {
-                std::cerr << "ERROR::SHADER::INCLUDE_NOT_FOUND: "
-                    << includeFile << "\n";
+                std::cerr << "ERROR::SHADER::INCLUDE_NOT_FOUND: " << includeFile << "\n";
                 continue;
             }
 
-            std::string includedSource = loadFileToString(fullPath);
-
-            output << preprocessIncludes(
-                includedSource,
-                getDirectory(fullPath)
-            ) << "\n";
+            // recurse so included files can have their own #includes
+            output << preprocessIncludes(loadFileToString(fullPath), getDirectory(fullPath)) << "\n";
         }
         else
         {
@@ -249,7 +239,7 @@ std::string Shader::getDirectory(const std::string& path)
 {
     size_t slash = path.find_last_of("/\\");
     if (slash == std::string::npos)
-        return "";
+        return ""; // no directory component, treat as current dir
     return path.substr(0, slash + 1);
 }
 
@@ -265,8 +255,9 @@ unsigned int Shader::compileShader(const char* source, unsigned int shaderType)
 
 void Shader::checkCompileErrors(unsigned int shader, const std::string& type)
 {
-    GLint success;
+    GLint  success;
     GLchar infoLog[1024];
+
     if (type == "PROGRAM") {
         glGetProgramiv(shader, GL_LINK_STATUS, &success);
         if (!success) {

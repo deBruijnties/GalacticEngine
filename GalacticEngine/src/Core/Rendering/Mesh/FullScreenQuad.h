@@ -6,7 +6,7 @@ class FullscreenQuad
 public:
     static Mesh& Get()
     {
-        static Mesh quad = Mesh::LoadMeshFromFile("Assets/models/FullscreenQuad.obj");
+        static Mesh quad = Mesh::LoadMeshFromFile("engineassets/models/FullscreenQuad.obj");
         static bool initialized = false;
 
         if (!initialized)

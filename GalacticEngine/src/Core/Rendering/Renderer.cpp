@@ -345,7 +345,7 @@ void Renderer::EndCamera()
         glEnable(GL_DEPTH_TEST);
     }
 
-    // 7. FINAL COPY + DITHER PASS TO output framebuffer (or screen)
+    // FINAL COPY + DITHER PASS TO output framebuffer (or screen)
     {
         PROFILE_SCOPE("Dither / Output Pass");
 
@@ -374,14 +374,14 @@ void Renderer::EndCamera()
         ditherShader->bind();
         glActiveTexture(GL_TEXTURE0);
         // Read from the combine output (scene + bloom), NOT the raw internal
-        // HDR — that buffer no longer has bloom added into it.
+        // HDR that buffer no longer has bloom added into it.
         glBindTexture(GL_TEXTURE_2D, s_BloomCombineOutput->colorTex);
         ditherShader->setInt("u_HDR", 0);
 
         FullscreenQuad::Get().Draw();
     }
 
-    // 8. UI PASS  (always rendered to screen / final output)
+    // UI PASS  (always rendered to screen / final output)
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, Engine::width, Engine::height);
     UIPass();

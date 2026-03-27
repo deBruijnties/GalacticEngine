@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Mesh.h"
 #include <stdexcept>
 #include <glad/glad.h>
@@ -82,7 +82,7 @@ void Mesh::GenerateBuffers(bool dynamicDraw)
         glGenVertexArrays(1, &_vao);
     glBindVertexArray(_vao);
 
-    // --- Vertex Buffer (positions) ---
+    // Vertex Buffer (positions)
     if (_vbo == 0)
         glGenBuffers(1, &_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
@@ -90,7 +90,7 @@ void Mesh::GenerateBuffers(bool dynamicDraw)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vector3), (void*)0);
     glEnableVertexAttribArray(0);
 
-    // --- Tangent Buffer ---
+    // Tangent Buffer
     if (!Tangents.empty())
     {
         if (_tbo == 0)
@@ -102,7 +102,7 @@ void Mesh::GenerateBuffers(bool dynamicDraw)
         glEnableVertexAttribArray(4);
     }
 
-    // --- Normal Buffer ---
+    // Normal Buffer
     if (!Normals.empty()) {
         if (_nbo == 0)
             glGenBuffers(1, &_nbo);
@@ -112,7 +112,7 @@ void Mesh::GenerateBuffers(bool dynamicDraw)
         glEnableVertexAttribArray(1);
     }
 
-    // --- Color Buffer ---
+    // Color Buffer
     if (!Colors.empty()) {
         if (_cbo == 0)
             glGenBuffers(1, &_cbo);
@@ -122,7 +122,7 @@ void Mesh::GenerateBuffers(bool dynamicDraw)
         glEnableVertexAttribArray(2);
     }
 
-    // --- UV Buffer ---
+    // UV Buffer
     if (!UVs.empty()) {
         if (_uvbo == 0)
             glGenBuffers(1, &_uvbo);
@@ -132,7 +132,7 @@ void Mesh::GenerateBuffers(bool dynamicDraw)
         glEnableVertexAttribArray(3);
     }
 
-    // --- Element Buffer (EBO) ---
+    // Element Buffer (EBO)
     if (!Indices.empty()) {
         if (_ebo == 0)
             glGenBuffers(1, &_ebo);
@@ -209,7 +209,7 @@ Mesh Mesh::LoadMeshFromFile(const std::string& filepath)
     mesh.Colors.reserve(aiMesh->mNumVertices);
     mesh.Tangents.reserve(aiMesh->mNumVertices);
 
-    // --- Extract vertex data ---
+    // Extract vertex data
     for (unsigned int i = 0; i < aiMesh->mNumVertices; i++) {
         mesh.Vertices.emplace_back(
             aiMesh->mVertices[i].x,
@@ -248,7 +248,7 @@ Mesh Mesh::LoadMeshFromFile(const std::string& filepath)
 
     }
 
-    // --- Extract indices ---
+    // Extract indices
     for (unsigned int i = 0; i < aiMesh->mNumFaces; i++) {
         const aiFace& face = aiMesh->mFaces[i];
         for (unsigned int j = 0; j < face.mNumIndices; j++) {
@@ -256,9 +256,9 @@ Mesh Mesh::LoadMeshFromFile(const std::string& filepath)
         }
     }
 
-    // --- Upload to GPU ---
+    // Upload to GPU
 
-    // --- Calculate buffer sizes ---
+    //  Calculate buffer sizes 
     size_t vertexBufferSize = mesh.Vertices.size() * sizeof(Vector3);
     size_t normalBufferSize = mesh.Normals.size() * sizeof(Vector3);
     size_t uvBufferSize = mesh.UVs.size() * sizeof(Vector2);
