@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "FrameBuffer.h"
 #include <glad/glad.h>
 #include <iostream>
@@ -64,7 +64,7 @@ static void chooseFormat(FrameBufferFormat format,
     }
 }
 
-// --- Constructor: initialize members to safe defaults ---
+//  Constructor: initialize members to safe defaults 
 FrameBuffer::FrameBuffer()
     : fbo(0)
     , colorTex(0)

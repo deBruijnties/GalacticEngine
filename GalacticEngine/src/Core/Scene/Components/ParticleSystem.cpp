@@ -91,7 +91,7 @@ void ParticleSystem::OnUpdate()
     if (particleInstanceBuffer->GetCapacity() < particles.size())
         particleInstanceBuffer->Allocate(std::max<size_t>(1, particles.size()));
 
-    // If no particles -> just upload empty
+    // If no particles just upload empty
     if (particles.empty())
     {
         particleInstanceBuffer->SetActiveCount(0);
