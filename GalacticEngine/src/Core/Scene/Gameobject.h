@@ -64,7 +64,7 @@ public:
         return nullptr;
     }
 
-    // ---------- Non-template functions ----------
+    // - Non-template functions -
     void start();
     void update();
     void submitRender();

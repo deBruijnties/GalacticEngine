@@ -404,3 +404,4 @@ FodyWeavers.xsd
 # Allow ALL files in src
 !GalacticEngine/src/
 !GalacticEngine/src/**
+!GalacticEngine/engineassets/**
