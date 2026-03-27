@@ -16,7 +16,7 @@ bool GBuffer::Create(int width, int height)
     glGenFramebuffers(1, &FBO);
     glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 
-    // 1. Albedo + Metallic  (RGBA8)
+    // Albedo + Metallic  (RGBA8)
     glGenTextures(1, &AlbedoMetalTex);
     glBindTexture(GL_TEXTURE_2D, AlbedoMetalTex);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, Width, Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
@@ -26,7 +26,7 @@ bool GBuffer::Create(int width, int height)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, AlbedoMetalTex, 0);
 
-    // 2. Normal + Roughness  (RGB16F + A8)
+    // Normal + Roughness  (RGB16F + A8)
     glGenTextures(1, &NormalRoughTex);
     glBindTexture(GL_TEXTURE_2D, NormalRoughTex);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Width, Height, 0, GL_RGBA, GL_FLOAT, nullptr);
@@ -36,7 +36,7 @@ bool GBuffer::Create(int width, int height)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, NormalRoughTex, 0);
 
-    // 3. Emission + AO  (RGB16F + A8)
+    // Emission + AO  (RGB16F + A8)
     glGenTextures(1, &EmissionAOTex);
     glBindTexture(GL_TEXTURE_2D, EmissionAOTex);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Width, Height, 0, GL_RGBA, GL_FLOAT, nullptr);
@@ -118,11 +118,10 @@ void GBuffer::ClearBuffers(const Vector4& albedoClearColor)
 {
     glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 
-    // --------------------------------------------------------
+    
     // 0. Albedo + Metallic
     // RGB = albedo
     // A   = metallic
-    // --------------------------------------------------------
     GLfloat albedoMetal[4] = {
         albedoClearColor.r,
         albedoClearColor.g,
@@ -131,31 +130,27 @@ void GBuffer::ClearBuffers(const Vector4& albedoClearColor)
     };
     glClearBufferfv(GL_COLOR, 0, albedoMetal);
 
-    // --------------------------------------------------------
     // 1. Normal + Roughness
     // RGB = normal (default +Z)
     // A   = roughness
-    // --------------------------------------------------------
     GLfloat normalRough[4] = {
         0.0f, 0.0f, 1.0f,  // normal
         1.0f              // roughness
     };
     glClearBufferfv(GL_COLOR, 1, normalRough);
 
-    // --------------------------------------------------------
     // 2. Emission + AO
     // RGB = emission
     // A   = AO
-    // --------------------------------------------------------
+
     GLfloat emissionAO[4] = {
         0.0f, 0.0f, 0.0f, // emission
         1.0f             // AO
     };
     glClearBufferfv(GL_COLOR, 2, emissionAO);
 
-    // --------------------------------------------------------
     // Depth
-    // --------------------------------------------------------
+
     GLfloat depth = 1.0f;
     glClearBufferfv(GL_DEPTH, 0, &depth);
 }

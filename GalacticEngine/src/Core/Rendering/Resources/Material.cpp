@@ -5,7 +5,7 @@
 #include <core/Rendering/Resources/Texture.h>
 #include <core/Rendering/Buffers/framebuffer.h>
 
-
+// material uniforms
 std::unordered_map<std::string, float> Material::floatGlobalUniforms;
 std::unordered_map<std::string, bool> Material::boolGlobalUniforms;
 std::unordered_map<std::string, Vector3> Material::vec3GlobalUniforms;
@@ -101,7 +101,7 @@ void Material::SetFrameBufferTexture(const std::string& name, FrameBuffer* fb)
     textureUniforms[name] = std::move(src);
 }
 
-
+//bind shader and uniforms
 void Material::Bind()
 {
     if (!shader)
